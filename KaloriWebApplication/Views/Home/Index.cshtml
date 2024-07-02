@@ -2,20 +2,37 @@
     ViewData["Title"] = "Homepage";
 }
 
-<div class="navbar">
-    <div class="menu-icon" onclick="toggleMenu()">
-        &#9776;
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>Welcome to KaloriWebApplication</h1>
+            <p>
+                KaloriWebApplication is dedicated to helping you manage your health through effective tracking and analysis of your daily nutritional intake. Whether you're looking to maintain a healthy weight, monitor your calorie intake, or track your BMI, our platform provides the tools and insights you need.
+            </p>
+            <p>
+                Our features include:
+                <ul>
+                    <li>Easy food entry with detailed nutritional information</li>
+                    <li>Daily and weekly reports to track your progress</li>
+                    <li>Personalized recommendations based on your health goals</li>
+                    <li>Notifications to keep you informed about your progress</li>
+                </ul>
+            </p>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Why Choose Us?</h5>
+                    <p class="card-text">
+                        At KaloriWebApplication, we are committed to providing you with a user-friendly experience that makes managing your health goals simple and effective. Join us today and start your journey towards a healthier lifestyle.
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<div class="menu" id="menu">
-    <a asp-controller="Account" asp-action="Profile">Profil</a>
-    <a asp-controller="Food" asp-action="Entry">Besin Girişi</a>
-    <a asp-controller="Reports" asp-action="DailyWeekly">Günlük-Haftalık Raporlar</a>
-    <a asp-controller="Notifications" asp-action="Index">Bildirimler</a>
-</div>
-<div class="content">
-    <h1>Hoş Geldiniz</h1>
-</div>
+
 
 @section Scripts {
     <script src="~/js/site.js"></script>

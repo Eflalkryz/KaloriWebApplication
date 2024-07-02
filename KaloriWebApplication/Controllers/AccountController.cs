@@ -17,6 +17,11 @@ namespace KaloriWebApplication.Controllers
         {
             return View();
         }
+        public IActionResult Dashboard()
+        {
+            ViewData["Title"] = "Account Dashboard";
+            return View();
+        }
 
         [HttpPost]
         public IActionResult Login(User model)
@@ -28,7 +33,7 @@ namespace KaloriWebApplication.Controllers
 
                 if (user != null)
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Dashboard");
                 }
                 else
                 {

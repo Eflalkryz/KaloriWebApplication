@@ -8,31 +8,31 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card mt-5">
-                <div class="card-header">
+                <div class="card-header bg-success text-white">
                     <h2 class="text-center">Register</h2>
                 </div>
                 <div class="card-body">
                     <form asp-action="Register" method="post">
                         <div class="form-group">
-                            <label asp-for="Username">Username</label>
+                            <label asp-for="Username" class="text-success">Username</label>
                             <input asp-for="Username" class="form-control" />
                             <span asp-validation-for="Username" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Password">Password</label>
+                            <label asp-for="Password" class="text-success">Password</label>
                             <input asp-for="Password" type="password" class="form-control" />
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Eposta">Email</label>
+                            <label asp-for="Eposta" class="text-success">Email</label>
                             <input asp-for="Eposta" class="form-control" />
                             <span asp-validation-for="Eposta" class="text-danger"></span>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block">Register</button>
+                        <button type="submit" class="btn btn-success btn-block">Register</button>
                     </form>
                 </div>
-                <div class="card-footer">
-                    <p class="text-center">Already have an account? <a asp-controller="Account" asp-action="Login">Login here</a></p>
+                <div class="card-footer bg-light">
+                    <p class="text-center">Already have an account? <a asp-controller="Account" asp-action="Login" class="text-success">Login here</a></p>
                 </div>
             </div>
         </div>

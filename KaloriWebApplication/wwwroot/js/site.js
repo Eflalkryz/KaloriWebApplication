@@ -1,4 +1,17 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿// Menüyü açma ve kapama fonksiyonları
+function toggleMenu() {
+    var menu = document.getElementById("menu");
+    menu.classList.toggle("show-menu");
+}
 
-// Write your JavaScript code.
+// Mouse ile navbar üzerine gelindiğinde menüyü aç
+document.querySelector(".menu-icon").addEventListener("mouseenter", function () {
+    var menu = document.getElementById("menu");
+    menu.classList.add("show-menu");
+});
+
+// Mouse navbar üzerinden çıktığında menüyü kapat
+document.querySelector(".menu").addEventListener("mouseleave", function () {
+    var menu = document.getElementById("menu");
+    menu.classList.remove("show-menu");
+});

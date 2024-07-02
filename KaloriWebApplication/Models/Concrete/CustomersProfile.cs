@@ -11,7 +11,7 @@ namespace KaloriWebApplication.Models.Concrete
     {
         [Key]
         public int CustomerID { get; set; }
-        [StringLength(50)]
+        [Required]
         public int UserID { get; set; }
         [StringLength(50)]
 
