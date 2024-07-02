@@ -4,7 +4,7 @@ using KaloriWebApplication.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
+//deneme YÝÐÝT ÇAM
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
