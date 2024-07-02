@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Homepage";
+}
+
+<div class="navbar">
+    <div class="menu-icon" onclick="toggleMenu()">
+        &#9776;
+    </div>
+</div>
+<div class="menu" id="menu">
+    <a asp-controller="Account" asp-action="Profile">Profil</a>
+    <a asp-controller="Food" asp-action="Entry">Besin Girişi</a>
+    <a asp-controller="Reports" asp-action="DailyWeekly">Günlük-Haftalık Raporlar</a>
+    <a asp-controller="Notifications" asp-action="Index">Bildirimler</a>
+</div>
+<div class="content">
+    <h1>Hoş Geldiniz</h1>
+</div>
+
+@section Scripts {
+    <script src="~/js/site.js"></script>
+}
