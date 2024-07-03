@@ -12,11 +12,13 @@ namespace KaloriWebApplication.Controllers
         {
             _context = context;
         }
+
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
+
         public IActionResult Dashboard()
         {
             ViewData["Title"] = "Account Dashboard";
@@ -62,9 +64,36 @@ namespace KaloriWebApplication.Controllers
                 _context.Users.Add(model);
                 _context.SaveChanges();
 
-                return RedirectToAction("Login");
+                return RedirectToAction("CompleteProfile", new { userId = model.UserID });
             }
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult CompleteProfile(int userId)
+        {
+            var profile = new CustomersProfile { UserID = userId };
+            return View(profile);
+        }
+
+        [HttpPost]
+        public IActionResult CompleteProfile(CustomersProfile model)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.CustomersProfiles.Add(model);
+                _context.SaveChanges();
+                return RedirectToAction("Dashboard");
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult TestCompleteProfile()
+        {
+            var profile = new CustomersProfile { UserID = 0 }; // Test için varsayılan bir UserID
+            return RedirectToAction("CompleteProfile", new { userId = profile.UserID });
         }
     }
 }
