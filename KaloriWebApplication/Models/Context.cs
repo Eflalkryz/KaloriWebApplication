@@ -17,10 +17,6 @@ namespace KaloriWebApplication.Models
         {
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Server=LAPTOP-3I5VK4D6;Database=Context; Integrated Security=True;Trust Server Certificate=True;");
-        }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Nutrient> Nutrients { get; set; }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KaloriWebApplication.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240701145840_secondmig")]
-    partial class secondmig
+    [Migration("20240703093910_Inıtıal")]
+    partial class Inıtıal
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -91,7 +91,6 @@ namespace KaloriWebApplication.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("UserID")
-                        .HasMaxLength(50)
                         .HasColumnType("int");
 
                     b.Property<int>("Weight")

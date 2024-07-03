@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KaloriWebApplication.Migrations
 {
     /// <inheritdoc />
-    public partial class dem : Migration
+    public partial class Inıtıal : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -29,12 +29,12 @@ namespace KaloriWebApplication.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CustomersProfile",
+                name: "CustomersProfiles",
                 columns: table => new
                 {
                     CustomerID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserID = table.Column<int>(type: "int", maxLength: 50, nullable: false),
+                    UserID = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Age = table.Column<int>(type: "int", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
@@ -46,9 +46,9 @@ namespace KaloriWebApplication.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CustomersProfile", x => x.CustomerID);
+                    table.PrimaryKey("PK_CustomersProfiles", x => x.CustomerID);
                     table.ForeignKey(
-                        name: "FK_CustomersProfile_Users_UserID",
+                        name: "FK_CustomersProfiles_Users_UserID",
                         column: x => x.UserID,
                         principalTable: "Users",
                         principalColumn: "UserID",
@@ -61,22 +61,21 @@ namespace KaloriWebApplication.Migrations
                 {
                     NutrientID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerID = table.Column<int>(type: "int", nullable: false),
                     NutrientName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     NutrientEntryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     NutrientAmount = table.Column<int>(type: "int", nullable: false),
                     NutrientCalory = table.Column<int>(type: "int", nullable: false),
-                    CustomersProfileCustomerID = table.Column<int>(type: "int", nullable: false)
+                    CustomerID = table.Column<int>(type: "int", nullable: false),
+                    CustomersProfileCustomerID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Nutrients", x => x.NutrientID);
                     table.ForeignKey(
-                        name: "FK_Nutrients_CustomersProfile_CustomersProfileCustomerID",
+                        name: "FK_Nutrients_CustomersProfiles_CustomersProfileCustomerID",
                         column: x => x.CustomersProfileCustomerID,
-                        principalTable: "CustomersProfile",
-                        principalColumn: "CustomerID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalTable: "CustomersProfiles",
+                        principalColumn: "CustomerID");
                 });
 
             migrationBuilder.CreateTable(
@@ -95,9 +94,9 @@ namespace KaloriWebApplication.Migrations
                 {
                     table.PrimaryKey("PK_Calories", x => x.CaloryID);
                     table.ForeignKey(
-                        name: "FK_Calories_CustomersProfile_CustomersProfilesCustomerID",
+                        name: "FK_Calories_CustomersProfiles_CustomersProfilesCustomerID",
                         column: x => x.CustomersProfilesCustomerID,
-                        principalTable: "CustomersProfile",
+                        principalTable: "CustomersProfiles",
                         principalColumn: "CustomerID");
                     table.ForeignKey(
                         name: "FK_Calories_Nutrients_NutrientsNutrientID",
@@ -117,8 +116,8 @@ namespace KaloriWebApplication.Migrations
                 column: "NutrientsNutrientID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CustomersProfile_UserID",
-                table: "CustomersProfile",
+                name: "IX_CustomersProfiles_UserID",
+                table: "CustomersProfiles",
                 column: "UserID",
                 unique: true);
 
@@ -138,7 +137,7 @@ namespace KaloriWebApplication.Migrations
                 name: "Nutrients");
 
             migrationBuilder.DropTable(
-                name: "CustomersProfile");
+                name: "CustomersProfiles");
 
             migrationBuilder.DropTable(
                 name: "Users");

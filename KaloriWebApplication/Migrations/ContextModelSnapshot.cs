@@ -88,7 +88,6 @@ namespace KaloriWebApplication.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("UserID")
-                        .HasMaxLength(50)
                         .HasColumnType("int");
 
                     b.Property<int>("Weight")
