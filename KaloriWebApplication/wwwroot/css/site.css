@@ -35,3 +35,8 @@
 .show-menu {
     display: block; /* show-menu sýnýfý eklendiðinde menüyü göster */
 }
+
+
+.card-body{
+    background-color:white
+}

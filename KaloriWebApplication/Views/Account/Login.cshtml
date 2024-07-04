@@ -3,6 +3,9 @@
 @{
     ViewData["Title"] = "Login";
 }
+<style>
+
+</style>
 
 <div class="container">
     <div class="row justify-content-center">
@@ -40,5 +43,6 @@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script src="~/css/site.css"></script>
     }
 }
