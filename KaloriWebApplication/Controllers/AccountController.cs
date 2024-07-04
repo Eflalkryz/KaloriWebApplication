@@ -57,9 +57,28 @@ namespace KaloriWebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Yeni kullanıcıyı ekleyerek veritabanına kaydetme
-                model.RegisterDate = DateTime.UtcNow; // Otomatik olarak kayıt tarihini ayarla
-                model.AdminRole = false; // Yeni kullanıcılar için admin rolü varsayılan olarak false
+                // Check if the email is already registered
+                var existingUserByEmail = _context.Users.FirstOrDefault(u => u.Eposta == model.Eposta);
+                if (existingUserByEmail != null)
+                {
+                    ModelState.AddModelError("Eposta", "This email is already registered.");
+                }
+
+                // Check if the username is already taken
+                var existingUserByUsername = _context.Users.FirstOrDefault(u => u.Username == model.Username);
+                if (existingUserByUsername != null)
+                {
+                    ModelState.AddModelError("Username", "This username is already taken.");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+
+                
+                model.RegisterDate = DateTime.UtcNow; 
+                model.AdminRole = false; 
 
                 _context.Users.Add(model);
                 _context.SaveChanges();
