@@ -20,7 +20,7 @@ namespace KaloriWebApplication.Models.Concrete
 
         public int UserID { get; set; }  // Foreign key
 
-        public virtual User? User { get; set; }  // Navigation property
+        public virtual User? User { get; set; }  
 
     }
 }
