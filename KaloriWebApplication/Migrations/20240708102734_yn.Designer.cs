@@ -4,6 +4,7 @@ using KaloriWebApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KaloriWebApplication.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20240708102734_yn")]
+    partial class yn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -224,13 +227,13 @@ namespace KaloriWebApplication.Migrations
 
             modelBuilder.Entity("KaloriWebApplication.Models.Concrete.Nutrient", b =>
                 {
-                    b.HasOne("KaloriWebApplication.Models.Concrete.User", "User")
+                    b.HasOne("KaloriWebApplication.Models.Concrete.User", "Users")
                         .WithMany("Nutrients")
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("KaloriWebApplication.Models.Concrete.CustomersProfile", b =>

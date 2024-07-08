@@ -1,6 +1,10 @@
 ﻿using KaloriWebApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using KaloriWebApplication.Models.Concrete;
+using System.Formats.Asn1;
+using System.Globalization;
+using CsvHelper;
+using KaloriWebApplication.Models.Concrete;    
 
 namespace KaloriWebApplication.Controllers
 {
@@ -114,5 +118,34 @@ namespace KaloriWebApplication.Controllers
             var profile = new CustomersProfile { UserID = 0 }; // Test için varsayılan bir UserID
             return RedirectToAction("CompleteProfile", new { userId = profile.UserID });
         }
+
+        [HttpGet]
+        public IActionResult NutrientSelect()
+        {
+            var categories = _context.CaloryNutrients
+                .Select(c => c.FoodCategory)
+                .Distinct()
+                .ToList();
+
+            ViewBag.Categories = categories;
+
+            return View();
+        }
+
+
+        [HttpGet]
+        public IActionResult GetFoodItems(string category)
+        {
+            var foodItems = _context.CaloryNutrients
+                .Where(c => c.FoodCategory == category)
+                .Select(c => c.FoodItem)
+                .ToList();
+
+            return Json(foodItems);
+        }
     }
+
+
+
 }
+

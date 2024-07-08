@@ -21,5 +21,6 @@ namespace KaloriWebApplication.Models.Concrete
         public bool AdminRole { get; set; }
 
         public CustomersProfile? CustomersProfiles { get; set; }
+        public ICollection<Nutrient>? Nutrients { get; set; }
     }
 }

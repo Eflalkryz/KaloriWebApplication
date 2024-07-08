@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Nutrient Select";
+}
+
+<h2>Nutrient Selection</h2>
+
+<div class="form-group">
+    <label for="categoryDropdown">Select Category:</label>
+    <select id="categoryDropdown" class="form-control">
+        <option value="">-- Select Category --</option>
+        @foreach (var category in ViewBag.Categories)
+        {
+            <option value="@category">@category</option>
+        }
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="foodItemDropdown">Select Food Item:</label>
+    <select id="foodItemDropdown" class="form-control">
+        <option value="">-- Select Food Item --</option>
+    </select>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('#categoryDropdown').change(function () {
+                var category = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("GetFoodItems", "Account")',
+                    type: 'GET',
+                    data: { category: category },
+                    success: function (response) {
+                        var foodItemDropdown = $('#foodItemDropdown');
+                        foodItemDropdown.empty();
+                        if (response.length > 0) {
+                            $.each(response, function (index, item) {
+                                foodItemDropdown.append($('<option>').text(item).attr('value', item));
+                            });
+                        } else {
+                            foodItemDropdown.append($('<option>').text('-- No Food Items --'));
+                        }
+                    },
+                    error: function () {
+                        alert('Error fetching food items.');
+                    }
+                });
+            });
+        });
+    </script>
+}

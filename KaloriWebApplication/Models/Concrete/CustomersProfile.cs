@@ -32,7 +32,7 @@ namespace KaloriWebApplication.Models.Concrete
         [Required]
         public virtual User Users { get; set; }
         public ICollection<Calory>? Calories { get; set; }
-        public ICollection<Nutrient>? Nutrients { get; set; }
+
 
     }
 }

@@ -22,6 +22,8 @@ namespace KaloriWebApplication.Models
         public DbSet<Nutrient> Nutrients { get; set; }
         public DbSet<Calory> Calories { get; set; }
         public DbSet<CustomersProfile> CustomersProfiles { get; set; } //S..ssss
+        public DbSet<CaloryNutrient> CaloryNutrients { get; set; } 
+
 
     }
 }

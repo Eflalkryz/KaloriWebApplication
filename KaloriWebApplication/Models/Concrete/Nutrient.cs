@@ -18,8 +18,9 @@ namespace KaloriWebApplication.Models.Concrete
         public int NutrientAmount { get; set; }
         public int NutrientCalory { get; set; }
 
-        public int CustomerID { get; set; }
-        public virtual CustomersProfile? CustomersProfile { get; set; }
+        public int UserID { get; set; }  // Foreign key
+
+        public virtual User? User { get; set; }  // Navigation property
 
     }
 }
