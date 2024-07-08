@@ -16,19 +16,19 @@ namespace KaloriWebApplication.Models.Concrete
         [StringLength(50)]
 
         public String? Name { get; set; }
-        public int Age { get; set; }
+        public int? Age { get; set; }
 
         [StringLength(50)]
         public String? Gender { get; set; }
 
-        public int Height { get; set; }
-        public int Weight { get; set; }
+        public int? Height { get; set; }
+        public int? Weight { get; set; }
         [StringLength(50)]
         public String? ActivityLevel { get; set; }
 
         [StringLength(50)]
         public String? Goal { get; set; } //Kilo Alma mı ? Verme mi ?
-        public int DailyCaloryLimit { get; set; }
+        public int? DailyCalories { get; set; }
         [Required]
         public virtual User Users { get; set; }
         public ICollection<Calory>? Calories { get; set; }
