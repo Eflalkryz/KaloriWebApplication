@@ -1,127 +1,85 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete Your Profile</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #ffe4b5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+﻿@model KaloriWebApplication.Models.Concrete.User
 
-        .profile-container {
-            background-color: #ffe4b5e;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 800px;
-        }
+@{
+    ViewData["Title"] = "Complete Your Profile";
+}
 
-        .profile-form {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-            .profile-form h2 {
-                width: 100%;
-                text-align: center;
-                color: #8D5E54;
-                margin-bottom: 30px;
-                font-size: 24px;
-            }
-
-        .form-group {
-            flex: 1 1 calc(50% - 20px);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-            .form-group label {
-                margin-bottom: 5px;
-                color: #333;
-                font-size: 18px;
-            }
-
-            .form-group input,
-            .form-group select {
-                padding: 12px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                font-size: 18px;
-            }
-
-        .profile-form button {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 4px;
-            background-color: #8D5E54;
-            color: white;
-            cursor: pointer;
-            font-size: 18px;
-            margin-top: 30px;
-        }
-
-            .profile-form button:hover {
-                background-color: #6e7a80;
-            }
-    </style>
-</head>
-<body>
-    <div class="profile-container">
-        <form class="profile-form">
-            <h2>Complete Your Profile</h2>
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" required>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="text-center">Complete Your Profile</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-action="CompleteProfile" method="post">
+                        <input type="hidden" asp-for="UserID" />
+                        <div class="form-group">
+                            <label asp-for="Name" class="text-primary">Name</label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Age" class="text-primary">Age</label>
+                            <input asp-for="Age" type="number" class="form-control" />
+                            <span asp-validation-for="Age" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Gender" class="text-primary">Gender</label>
+                            <select asp-for="Gender" class="form-control">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Height" class="text-primary">Height (cm)</label>
+                            <input asp-for="Height" type="number" class="form-control" />
+                            <span asp-validation-for="Height" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Weight" class="text-primary">Weight (kg)</label>
+                            <input asp-for="Weight" type="number" class="form-control" />
+                            <span asp-validation-for="Weight" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ActivityLevel" class="text-primary">Activity Level</label>
+                            <select asp-for="ActivityLevel" class="form-control">
+                                <option value="">Select Activity Level</option>
+                                <option value="Sedentary">Sedentary (little or no exercise)</option>
+                                <option value="Lightly Active">Lightly Active (light exercise/sports 1-3 days/week)</option>
+                                <option value="Moderately Active">Moderately Active (moderate exercise/sports 3-5 days/week)</option>
+                                <option value="Very Active">Very Active (hard exercise/sports 6-7 days a week)</option>
+                                <option value="Extra Active">Extra Active (very hard exercise/sports and physical job)</option>
+                            </select>
+                            <span asp-validation-for="ActivityLevel" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Goal" class="text-primary">Goal</label>
+                            <select asp-for="Goal" class="form-control">
+                                <option value="">Select Goal</option>
+                                <option value="Maintain Weight">Maintain Weight</option>
+                                <option value="Lose Weight">Lose Weight</option>
+                                <option value="Gain Weight">Gain Weight</option>
+                            </select>
+                            <span asp-validation-for="Goal" class="text-danger"></span>
+                        </div>
+                        <input type="hidden" asp-for="DailyCalories" />
+                        <button type="submit" class="btn btn-primary btn-block">Save Profile</button>
+                    </form>
+                </div>
+                <div class="card-footer bg-light">
+                    <p class="text-center">Return to <a asp-controller="Account" asp-action="Dashboard" class="text-primary">Dashboard</a></p>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="age">Age</label>
-                <input type="number" id="age" name="age" required>
-            </div>
-            <div class="form-group"> 
-                <label for="gender">Gender</label>
-                <select id="goal" name="goal" required>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="height">Height</label>
-                <input type="number" id="height" name="height" required>
-            </div>
-            <div class="form-group">
-                <label for="weight">Weight</label>
-                <input type="number" id="weight" name="weight" required>
-            </div>
-            <div class="form-group">
-                <label for="activity-level">Activity Level</label>
-                <input type="text" id="activity-level" name="activity-level" required>
-            </div>
-            <div class="form-group">
-                <label for="goal">Goal</label>
-                <select id="goal" name="goal" required>
-                    <option value="maintain">Maintain Weight</option>
-                    <option value="lose">Lose Weight</option>
-                    <option value="gain">Gain Weight</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="daily-calory-limit">Daily Calory Limit</label>
-                <input type="number" id="daily-calory-limit" name="daily-calory-limit" required>
-            </div>
-            <button type="submit">Save Profile</button>
-        </form>
+        </div>
     </div>
-</body>
-</html>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

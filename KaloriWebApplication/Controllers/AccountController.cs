@@ -1,10 +1,7 @@
-﻿using KaloriWebApplication.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using KaloriWebApplication.Models.Concrete;
-using System.Formats.Asn1;
-using System.Globalization;
-using CsvHelper;
-using KaloriWebApplication.Models.Concrete;    
+using System.Linq;
+using KaloriWebApplication.Models;
 
 namespace KaloriWebApplication.Controllers
 {
@@ -20,12 +17,6 @@ namespace KaloriWebApplication.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return View();
-        }
-
-        public IActionResult Dashboard()
-        {
-            ViewData["Title"] = "Account Dashboard";
             return View();
         }
 
@@ -51,6 +42,13 @@ namespace KaloriWebApplication.Controllers
         }
 
         [HttpGet]
+        public IActionResult Dashboard()
+        {
+            ViewData["Title"] = "Account Dashboard";
+            return View();
+        }
+
+        [HttpGet]
         public IActionResult Register()
         {
             return View();
@@ -66,6 +64,7 @@ namespace KaloriWebApplication.Controllers
                 if (existingUserByEmail != null)
                 {
                     ModelState.AddModelError("Eposta", "This email is already registered.");
+                    return View(model);
                 }
 
                 // Check if the username is already taken
@@ -73,20 +72,17 @@ namespace KaloriWebApplication.Controllers
                 if (existingUserByUsername != null)
                 {
                     ModelState.AddModelError("Username", "This username is already taken.");
-                }
-
-                if (!ModelState.IsValid)
-                {
                     return View(model);
                 }
 
-                
-                model.RegisterDate = DateTime.UtcNow; 
-                model.AdminRole = false; 
+                // Save the new user
+                model.RegisterDate = DateTime.UtcNow;
+                model.AdminRole = false;
 
                 _context.Users.Add(model);
                 _context.SaveChanges();
 
+                // Redirect to CompleteProfile
                 return RedirectToAction("CompleteProfile", new { userId = model.UserID });
             }
             return View(model);
@@ -95,28 +91,91 @@ namespace KaloriWebApplication.Controllers
         [HttpGet]
         public IActionResult CompleteProfile(int userId)
         {
-            var profile = new CustomersProfile { UserID = userId };
+            var user = _context.Users.FirstOrDefault(u => u.UserID == userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var profile = new User
+            {
+                UserID = userId
+            };
             return View(profile);
         }
 
         [HttpPost]
-        public IActionResult CompleteProfile(CustomersProfile model)
+        public IActionResult CompleteProfile(User model)
         {
             if (ModelState.IsValid)
             {
-                _context.CustomersProfiles.Add(model);
-                _context.SaveChanges();
-                return RedirectToAction("Dashboard");
-            }
+                // BMR hesaplama
+                var bmr = CalculateBMR(model);
 
+                // Günlük kalori ihtiyacını hesaplama
+                var dailyCalories = CalculateDailyCalories(bmr, model.ActivityLevel);
+
+                model.DailyCalories = (int)dailyCalories; // Günlük kalori ihtiyacı integer olmalı
+
+                // Kullanıcının profili güncelle
+                var existingUser = _context.Users.FirstOrDefault(u => u.UserID == model.UserID);
+                if (existingUser != null)
+                {
+                    existingUser.Name = model.Name;
+                    existingUser.Age = model.Age;
+                    existingUser.Gender = model.Gender;
+                    existingUser.Height = model.Height;
+                    existingUser.Weight = model.Weight;
+                    existingUser.ActivityLevel = model.ActivityLevel;
+                    existingUser.Goal = model.Goal;
+                    existingUser.DailyCalories = model.DailyCalories;
+
+                    _context.SaveChanges();
+                    return RedirectToAction("Dashboard");
+                }
+            }
             return View(model);
         }
 
-        [HttpGet]
-        public IActionResult TestCompleteProfile()
+        private double CalculateBMR(User user)
         {
-            var profile = new CustomersProfile { UserID = 0 }; // Test için varsayılan bir UserID
-            return RedirectToAction("CompleteProfile", new { userId = profile.UserID });
+            // Basal Metabolic Rate (BMR) hesaplama
+            // BMR hesaplama formülü: 
+            // - Erkekler için: 10 * ağırlık(kg) + 6.25 * boy(cm) - 5 * yaş + 5
+            // - Kadınlar için: 10 * ağırlık(kg) + 6.25 * boy(cm) - 5 * yaş - 161
+            if (user.Gender == "Male")
+            {
+                return 10 * user.Weight.Value + 6.25 * user.Height.Value - 5 * user.Age.Value + 5;
+            }
+            else if (user.Gender == "Female")
+            {
+                return 10 * user.Weight.Value + 6.25 * user.Height.Value - 5 * user.Age.Value - 161;
+            }
+            else
+            {
+                // Eğer cinsiyet belirtilmemişse veya "Other" gibi bir değer varsa, varsayılan olarak erkek formülünü kullan
+                return 10 * user.Weight.Value + 6.25 * user.Height.Value - 5 * user.Age.Value + 5;
+            }
+        }
+
+        private double CalculateDailyCalories(double bmr, string activityLevel)
+        {
+            // Aktivite seviyesine göre kalori ihtiyacını hesaplama
+            switch (activityLevel)
+            {
+                case "Sedentary":
+                    return bmr * 1.2;
+                case "Lightly Active":
+                    return bmr * 1.375;
+                case "Moderately Active":
+                    return bmr * 1.55;
+                case "Very Active":
+                    return bmr * 1.725;
+                case "Extra Active":
+                    return bmr * 1.9;
+                default:
+                    return bmr; // Varsayılan olarak sadece BMR
+            }
         }
 
         [HttpGet]
@@ -132,7 +191,6 @@ namespace KaloriWebApplication.Controllers
             return View();
         }
 
-
         [HttpGet]
         public IActionResult GetFoodItems(string category)
         {
@@ -144,8 +202,4 @@ namespace KaloriWebApplication.Controllers
             return Json(foodItems);
         }
     }
-
-
-
 }
-
