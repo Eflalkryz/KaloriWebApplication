@@ -2,9 +2,6 @@
 using KaloriWebApplication.Models.Concrete;
 using System.Linq;
 using KaloriWebApplication.Models;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
 
 namespace KaloriWebApplication.Controllers
 {
@@ -22,9 +19,8 @@ namespace KaloriWebApplication.Controllers
         {
             return View();
         }
-
         [HttpPost]
-        public async Task<IActionResult> Login(User model)
+        public IActionResult Login(User model)
         {
             if (ModelState.IsValid)
             {
@@ -33,16 +29,8 @@ namespace KaloriWebApplication.Controllers
 
                 if (user != null)
                 {
-                    var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.Name, user.Username),
-                        new Claim("UserID", user.UserID.ToString())
-                    };
-
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    var authProperties = new AuthenticationProperties();
-
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+                    // Kullanıcı ID'sini oturumda saklama
+                    HttpContext.Session.SetInt32("UserID", user.UserID);
 
                     return RedirectToAction("Dashboard");
                 }
@@ -221,70 +209,7 @@ namespace KaloriWebApplication.Controllers
         }
         #endregion
 
-        private int GetLoggedInUserId()
-        {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserID");
-
-            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
-            {
-                return userId;
-            }
-
-            // Varsa hata durumu işleme stratejisi, yoksa default olarak 0 veya başka bir değer döndürebilirsiniz
-            // Örneğin:
-            // throw new InvalidOperationException("UserID claim is missing or invalid");
-            // veya
-            return 0; // veya başka bir default değer
-        }
 
 
-        #region Editing Profile
-        [HttpGet]
-        public IActionResult EditProfile()
-        {
-            // Giriş yapmış kullanıcının kimliğini al
-            var userId = GetLoggedInUserId();
-
-            // Kullanıcıyı veritabanından bul
-            var user = _context.Users.FirstOrDefault(u => u.UserID == userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            // Kullanıcının profil bilgilerini view'a gönder
-            return View(user);
-        }
-
-        [HttpPost]
-        public IActionResult EditProfile(User model)
-        {
-            if (ModelState.IsValid)
-            {
-                // Giriş yapmış kullanıcının kimliğini al
-                var userId = GetLoggedInUserId();
-
-                // Kullanıcının veritabanındaki mevcut kaydını bul
-                var existingUser = _context.Users.FirstOrDefault(u => u.UserID == userId);
-                if (existingUser != null)
-                {
-                    // Kullanıcı bilgilerini güncelle
-                    existingUser.Name = model.Name;
-                    existingUser.Age = model.Age;
-                    existingUser.Gender = model.Gender;
-                    existingUser.Height = model.Height;
-                    existingUser.Weight = model.Weight;
-                    existingUser.ActivityLevel = model.ActivityLevel;
-                    existingUser.Goal = model.Goal;
-                    existingUser.DailyCalories =(int) CalculateDailyCalories(CalculateBMR(model), model.ActivityLevel);
-
-                    _context.SaveChanges();
-                    return RedirectToAction("Dashboard");
-                }
-            }
-
-            return View(model);
-        }
-        #endregion
     }
 }
