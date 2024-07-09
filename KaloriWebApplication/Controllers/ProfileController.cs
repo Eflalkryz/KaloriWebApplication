@@ -24,7 +24,6 @@ namespace KaloriWebApplication.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            // userId ile kullanıcı profili verilerini çekme işlemi
             var user = _context.Users.FirstOrDefault(u => u.UserID == userId);
             if (user == null)
             {
@@ -33,6 +32,7 @@ namespace KaloriWebApplication.Controllers
 
             return View(user);
         }
+
         [HttpPost]
         public IActionResult ProfileEditing(User model)
         {
@@ -50,17 +50,20 @@ namespace KaloriWebApplication.Controllers
                     return NotFound();
                 }
 
-                existingUser.Username = model.Username;
-                existingUser.Password = model.Password;
-                existingUser.Eposta = model.Eposta;
-                existingUser.Name = model.Name;
-                existingUser.Age = model.Age;
-                existingUser.Gender = model.Gender;
-                existingUser.Height = model.Height;
-                existingUser.Weight = model.Weight;
-                existingUser.ActivityLevel = model.ActivityLevel;
-                existingUser.Goal = model.Goal;
-                existingUser.DailyCalories = (int) CalculateDailyCalories(model);
+                // Boş olmayan alanları güncelle
+                existingUser.Username = !string.IsNullOrWhiteSpace(model.Username) ? model.Username : existingUser.Username;
+                existingUser.Password = !string.IsNullOrWhiteSpace(model.Password) ? model.Password : existingUser.Password;
+                existingUser.Eposta = !string.IsNullOrWhiteSpace(model.Eposta) ? model.Eposta : existingUser.Eposta;
+                existingUser.Name = !string.IsNullOrWhiteSpace(model.Name) ? model.Name : existingUser.Name;
+                existingUser.Age = model.Age ?? existingUser.Age;
+                existingUser.Gender = !string.IsNullOrWhiteSpace(model.Gender) ? model.Gender : existingUser.Gender;
+                existingUser.Height = model.Height ?? existingUser.Height;
+                existingUser.Weight = model.Weight ?? existingUser.Weight;
+                existingUser.ActivityLevel = !string.IsNullOrWhiteSpace(model.ActivityLevel) ? model.ActivityLevel : existingUser.ActivityLevel;
+                existingUser.Goal = !string.IsNullOrWhiteSpace(model.Goal) ? model.Goal : existingUser.Goal;
+
+                
+                existingUser.DailyCalories = (int)CalculateDailyCalories(existingUser);
 
                 _context.SaveChanges();
                 return RedirectToAction("Dashboard", "Account");
@@ -71,7 +74,6 @@ namespace KaloriWebApplication.Controllers
 
         private double CalculateDailyCalories(User user)
         {
-            // Aktivite seviyesine göre günlük kalori ihtiyacını hesaplama
             double bmr = CalculateBMR(user);
             switch (user.ActivityLevel)
             {
@@ -92,7 +94,6 @@ namespace KaloriWebApplication.Controllers
 
         private double CalculateBMR(User user)
         {
-            // Basal Metabolic Rate (BMR) hesaplama
             if (user.Gender == "Male")
             {
                 return 10 * user.Weight.Value + 6.25 * user.Height.Value - 5 * user.Age.Value + 5;
@@ -103,10 +104,8 @@ namespace KaloriWebApplication.Controllers
             }
             else
             {
-                // Default olarak erkek formülünü kullan
                 return 10 * user.Weight.Value + 6.25 * user.Height.Value - 5 * user.Age.Value + 5;
             }
         }
     }
-    }
-
+}
