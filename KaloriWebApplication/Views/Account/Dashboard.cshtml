@@ -2,22 +2,71 @@
     ViewData["Title"] = "Dashboard";
 }
 
-
-    <div class="menu-icon" onclick="toggleMenu()">
-        &#9776;
-    </div>
+<div class="menu-icon" onclick="toggleMenu()">
+    &#9776;
+</div>
 
 <div class="menu" id="menu">
     <a asp-controller="Profile" asp-action="ProfileEditing">Profil</a>
-    <a asp-controller="Account" asp-action="NutrientSelect">Besin Girişi</a>
+    <a asp-controller="Nutrient" asp-action="NutrientSelect">Besin Girişi</a>
     <a asp-controller="Profile" asp-action="ProfileEditing">Günlük-Haftalık Raporlar</a>
     <a asp-controller="Account" asp-action="ProfileUpdating">Bildirimler</a>
 </div>
 <div class="content">
     <h1>Hoş Geldiniz</h1>
+    <button id="showNutrientsButton" class="btn btn-primary">Eklenilen Besinleri Göster</button>
+    <div id="nutrientsTable" style="display:none;">
+        <h2>Eklenilen Besinler</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Tarih</th>
+                    <th>Besin</th>
+                    <th>Miktar (gram)</th>
+                    <th>Kalori (100 gram başına)</th>
+                    <th>Toplam Kalori</th>
+                </tr>
+            </thead>
+            <tbody id="nutrientsBody">
+                <!-- Besin kayıtları buraya eklenecek -->
+            </tbody>
+        </table>
+    </div>
 </div>
 
 @section Scripts {
     <script src="~/js/site.js"></script>
-    <script src="~/css/site.css"></script>
+    <script>
+        $(document).ready(function () {
+            $('#showNutrientsButton').click(function () {
+                $.ajax({
+                    url: '@Url.Action("GetUserNutrients", "Nutrient")',
+                    type: 'GET',
+                    success: function (response) {
+                        var nutrientsBody = $('#nutrientsBody');
+                        nutrientsBody.empty();
+                        if (response.length > 0) {
+                            $.each(response, function (index, item) {
+                                var row = '<tr>'
+                                    + '<td>' + new Date(item.dateLogged).toLocaleDateString() + '</td>'
+                                    + '<td>' + item.caloryNutrient.foodItem + '</td>'
+                                    + '<td>' + item.quantity + '</td>'
+                                    + '<td>' + item.caloryNutrient.cals_per100grams + '</td>'
+                                    + '<td>' + (item.quantity / 100 * item.caloryNutrient.cals_per100grams).toFixed(2) + '</td>'
+                                    + '</tr>';
+                                nutrientsBody.append(row);
+                            });
+                            $('#nutrientsTable').show();
+                        } else {
+                            nutrientsBody.append('<tr><td colspan="5">Kayıt bulunamadı</td></tr>');
+                            $('#nutrientsTable').show();
+                        }
+                    },
+                    error: function () {
+                        alert('Besin kayıtlarını çekerken hata oluştu.');
+                    }
+                });
+            });
+        });
+    </script>
 }
