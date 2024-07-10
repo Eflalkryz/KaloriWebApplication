@@ -34,7 +34,6 @@ namespace KaloriWebApplication.Models.Concrete
         public String? Goal { get; set; } //Kilo Alma mı ? Verme mi ?
         public int? DailyCalories { get; set; }
 
-        public CustomersProfile? CustomersProfiles { get; set; }
-        public ICollection<Nutrient>? Nutrients { get; set; }
+        public ICollection<TotalCalory>? TotalCalories { get; set; }
     }
 }

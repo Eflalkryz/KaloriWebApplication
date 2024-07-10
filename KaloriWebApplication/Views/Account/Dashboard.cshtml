@@ -1,6 +1,11 @@
 ﻿@{
     ViewData["Title"] = "Dashboard";
 }
+<style>
+    .content{
+        background-color: rgba(192, 192, 192, 0.3);
+    }
+</style>
 
 <div class="menu-icon" onclick="toggleMenu()">
     &#9776;
@@ -13,7 +18,6 @@
     <a asp-controller="Account" asp-action="ProfileUpdating">Bildirimler</a>
 </div>
 <div class="content">
-    <h1>Hoş Geldiniz</h1>
     <button id="showNutrientsButton" class="btn btn-primary">Eklenilen Besinleri Göster</button>
     <div id="nutrientsTable" style="display:none;">
         <h2>Eklenilen Besinler</h2>
@@ -24,12 +28,17 @@
                     <th>Besin</th>
                     <th>Miktar (gram)</th>
                     <th>Kalori (100 gram başına)</th>
-                    <th>Toplam Kalori</th>
                 </tr>
             </thead>
             <tbody id="nutrientsBody">
                 <!-- Besin kayıtları buraya eklenecek -->
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" style="text-align:right;"><strong>Toplam Kalori:</strong></td>
+                    <td id="totalCalories" style="font-weight:bold;"></td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 </div>
@@ -47,14 +56,30 @@
                         nutrientsBody.empty();
                         if (response.length > 0) {
                             $.each(response, function (index, item) {
-                                var row = '<tr>'
-                                    + '<td>' + new Date(item.dateLogged).toLocaleDateString() + '</td>'
-                                    + '<td>' + item.caloryNutrient.foodItem + '</td>'
-                                    + '<td>' + item.quantity + '</td>'
-                                    + '<td>' + item.caloryNutrient.cals_per100grams + '</td>'
-                                    + '<td>' + (item.quantity / 100 * item.caloryNutrient.cals_per100grams).toFixed(2) + '</td>'
-                                    + '</tr>';
-                                nutrientsBody.append(row);
+                                var caloriesPer100Grams = parseInt(item.caloryNutrient.cals_per100grams.replace(" cal", "")) || 0;
+                                var totalCaloriesPerItem = (item.quantity / 100 * caloriesPer100Grams).toFixed(2);
+
+                                // AJAX request to get total calories for each date
+                                $.ajax({
+                                    url: '@Url.Action("GetTotalCaloriesByDate", "Nutrient")',
+                                    type: 'GET',
+                                    data: { date: new Date(item.dateLogged).toISOString().split('T')[0] },
+                                    success: function (caloriesResponse) {
+                                        var row = '<tr>'
+                                            + '<td>' + new Date(item.dateLogged).toLocaleDateString() + '</td>'
+                                            + '<td>' + item.caloryNutrient.foodItem + '</td>'
+                                            + '<td>' + item.quantity + '</td>'
+                                            + '<td>' + caloriesPer100Grams + ' cal</td>'
+                                            + '</tr>';
+                                        nutrientsBody.append(row);
+
+                                        // Update total calories after appending row
+                                        $('#totalCalories').text(caloriesResponse.success ? caloriesResponse.totalCalories : 'Veri bulunamadı');
+                                    },
+                                    error: function () {
+                                        alert('Toplam kalori verilerini çekerken hata oluştu.');
+                                    }
+                                });
                             });
                             $('#nutrientsTable').show();
                         } else {

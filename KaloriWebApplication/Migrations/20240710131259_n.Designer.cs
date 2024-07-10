@@ -4,6 +4,7 @@ using KaloriWebApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KaloriWebApplication.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20240710131259_n")]
+    partial class n
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,7 +51,7 @@ namespace KaloriWebApplication.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Calory");
+                    b.ToTable("Calories");
                 });
 
             modelBuilder.Entity("KaloriWebApplication.Models.Concrete.CaloryNutrient", b =>
@@ -128,30 +131,6 @@ namespace KaloriWebApplication.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("CustomersProfiles");
-                });
-
-            modelBuilder.Entity("KaloriWebApplication.Models.Concrete.TotalCalory", b =>
-                {
-                    b.Property<int>("CaloryID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CaloryID"));
-
-                    b.Property<DateTime?>("CaloryEntryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("TotalCal")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserID")
-                        .HasColumnType("int");
-
-                    b.HasKey("CaloryID");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("TotalCalories");
                 });
 
             modelBuilder.Entity("KaloriWebApplication.Models.Concrete.User", b =>
@@ -246,7 +225,7 @@ namespace KaloriWebApplication.Migrations
                         .HasForeignKey("CustomersProfileCustomerID");
 
                     b.HasOne("KaloriWebApplication.Models.Concrete.User", "Users")
-                        .WithMany()
+                        .WithMany("Calories")
                         .HasForeignKey("UserID");
 
                     b.Navigation("Users");
@@ -259,15 +238,6 @@ namespace KaloriWebApplication.Migrations
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("KaloriWebApplication.Models.Concrete.TotalCalory", b =>
-                {
-                    b.HasOne("KaloriWebApplication.Models.Concrete.User", "Users")
-                        .WithMany("TotalCalories")
-                        .HasForeignKey("UserID");
 
                     b.Navigation("Users");
                 });
@@ -290,7 +260,7 @@ namespace KaloriWebApplication.Migrations
 
             modelBuilder.Entity("KaloriWebApplication.Models.Concrete.User", b =>
                 {
-                    b.Navigation("TotalCalories");
+                    b.Navigation("Calories");
                 });
 #pragma warning restore 612, 618
         }

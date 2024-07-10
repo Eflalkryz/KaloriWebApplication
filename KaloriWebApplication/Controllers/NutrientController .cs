@@ -43,6 +43,47 @@ namespace KaloriWebApplication.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
+            var nutrient = _context.CaloryNutrients.Find(nutrientId);
+            if (nutrient == null)
+            {
+                return BadRequest("Invalid nutrient selected.");
+            }
+
+            // Kalori değerini çekip "cal" ekini kaldırıp integer'a çevirme
+            var calsPer100Grams = nutrient.Cals_per100grams?.Replace(" cal", "") ?? "0";
+            if (!int.TryParse(calsPer100Grams, out int calsPer100GramsValue))
+            {
+                return BadRequest("Invalid calorie value.");
+            }
+
+            // Girilen miktarın kalorisini hesapla
+            int totalCalories = (int)(calsPer100GramsValue * (quantity / 100));
+
+            var today = DateTime.Today;
+
+            // Aynı tarihe ait kayıt olup olmadığını kontrol et
+            var existingCalory = _context.TotalCalories
+                .FirstOrDefault(c => c.UserID == userId && c.CaloryDate == today);
+
+            if (existingCalory != null)
+            {
+                // Varsa, toplam kalori kısmını güncelle
+                existingCalory.TotalCal += totalCalories;
+                _context.TotalCalories.Update(existingCalory);
+            }
+            else
+            {
+                // Yoksa, yeni bir kayıt oluştur
+                var newCalory = new TotalCalory
+                {
+                    UserID = userId,
+                    TotalCal = totalCalories,
+                    CaloryDate = today
+                };
+                _context.TotalCalories.Add(newCalory);
+            }
+
+            // Kullanıcı besin kaydını ekleme
             var userNutrient = new UserNutrient
             {
                 UserID = userId.Value,
@@ -84,6 +125,27 @@ namespace KaloriWebApplication.Controllers
             });
 
             return Json(result);
+        }
+
+        [HttpGet]
+        public JsonResult GetTotalCaloriesByDate(DateTime date)
+        {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null)
+            {
+                return Json(new { success = false, message = "User not logged in" });
+            }
+
+            var totalCalories = _context.TotalCalories
+                .Where(tc => tc.UserID == userId && tc.CaloryDate == date.Date)
+                .FirstOrDefault();
+
+            if (totalCalories != null)
+            {
+                return Json(new { success = true, totalCalories = totalCalories.TotalCal });
+            }
+
+            return Json(new { success = false, message = "No data found for the selected date" });
         }
     }
 }

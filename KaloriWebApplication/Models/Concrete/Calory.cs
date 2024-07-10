@@ -11,11 +11,10 @@ namespace KaloriWebApplication.Models.Concrete
     {
         [Key]
         public int CaloryID { get; set; }
-        public int CustomerID { get; set; }
-        public int TotalCalory { get; set; }
-        public DateTime CaloryEntryDate { get; set; }
-        public virtual CustomersProfile? CustomersProfiles { get; set; }
-        public virtual Nutrient? Nutrients { get; set; }
+        public int? UserID { get; set; }
+        public int? TotalCalory { get; set; }
+        public DateTime? CaloryEntryDate { get; set; }
+        public virtual User? Users { get; set; }
 
 
     }

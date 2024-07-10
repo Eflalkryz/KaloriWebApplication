@@ -19,6 +19,8 @@ namespace KaloriWebApplication.Models
         public DbSet<CaloryNutrient> CaloryNutrients { get; set; }
         public DbSet<UserNutrient> UserNutrients { get; set; }
         public DbSet<CustomersProfile> CustomersProfiles { get; set; }
+        public DbSet<TotalCalory> TotalCalories { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
