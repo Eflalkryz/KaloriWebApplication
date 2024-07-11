@@ -107,8 +107,9 @@ namespace KaloriWebApplication.Controllers
                 return Json(new { success = false, message = "User not logged in" });
             }
 
+            var today = DateTime.Today;
             var userNutrients = _context.UserNutrients
-                .Where(un => un.UserID == userId.Value)
+                .Where(un => un.UserID == userId.Value && un.DateLogged.Date == today)
                 .Include(un => un.CaloryNutrient)
                 .OrderByDescending(un => un.DateLogged)
                 .ToList();
