@@ -171,5 +171,26 @@ namespace KaloriWebApplication.Controllers
 
             return Json(result);
         }
+
+        [HttpGet]
+        public IActionResult DailyCalories()
+        {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var user = _context.Users.Find(userId);
+            if (user == null)
+            {
+                return BadRequest("User not found.");
+            }
+
+            int dailyCalories = user.DailyCalories ?? 0;
+
+            // JSON olarak success ve dailyCalories değerlerini döndürüyoruz.
+            return Json(new { success = true, dailyCalories });
+        }
     }
 }
