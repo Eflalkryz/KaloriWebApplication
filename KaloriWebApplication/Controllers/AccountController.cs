@@ -89,6 +89,7 @@ namespace KaloriWebApplication.Controllers
             }
             return View(model);
         }
+
         #region Profile Completing
 
         [HttpGet]
@@ -208,6 +209,13 @@ namespace KaloriWebApplication.Controllers
             return Json(foodItems);
         }
         #endregion
+
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
 
 
 

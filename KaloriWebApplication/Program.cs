@@ -15,6 +15,8 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+builder.Services.AddHttpContextAccessor();
+
 // Veritabaný baðlamýný ekleyin
 builder.Services.AddDbContext<Context>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TutorialDbConnection")));
@@ -36,6 +38,7 @@ app.UseRouting();
 
 // Oturum yönetimini kullanýn
 app.UseSession();
+
 
 app.UseAuthorization();
 

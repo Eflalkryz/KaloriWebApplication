@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -9,8 +12,6 @@
     <link rel="stylesheet" href="~/KaloriWebApplication.styles.css" asp-append-version="true" />
 
     <style>
-
-
         .navbar-brand {
             color: #FFFFFF; /* Beyaz metin */
             font-weight: bold;
@@ -20,9 +21,9 @@
             color: #FFFFFF; /* Beyaz metin */
         }
 
-        .navbar-nav .nav-link:hover {
-            color: #FFFFFF; /* Beyaz metin */
-            background-color: #388E3C; /* Hafifçe koyu yeşil hover arka plan */
+            .navbar-nav .nav-link:hover {
+                color: #FFFFFF; /* Beyaz metin */
+                background-color: #388E3C; /* Hafifçe koyu yeşil hover arka plan */
             }
 
         .navbar-toggler-icon {
@@ -34,7 +35,6 @@
             padding: 10px 0;
             text-align: center;
         }
-
 
         body {
             background: linear-gradient(rgba(47, 23, 15, 0.65), rgba(47, 23, 15, 0.65)), url("/lib/deneme.jpeg");
@@ -48,10 +48,35 @@
             padding: 20px;
         }
 
+        .logout-link {
+            color: #FFFFFF;
+            text-decoration: none;
+        }
 
+            .logout-link:hover {
+                text-decoration: underline;
+            }
+        #Login{
+            background-color: cadetblue;
+            border: 1px solid;
+            border-radius:10px
+        }
+
+        #Register {
+            background-color: cadetblue;
+            border: 1px solid;
+            border-radius: 10px
+
+        }
+        
+        #Logout{
+            background-color: cadetblue;
+            border: 1px solid;
+            border-radius: 10px
+        }
     </style>
 </head>
-<body id ="fig">
+<body id="fig">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -69,6 +94,25 @@
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
+                    <ul class="navbar-nav">
+                        @if (HttpContextAccessor.HttpContext.Session.GetInt32("UserID") != null)
+                        {
+                            <li class="nav-item" id="Logout">
+                                <form class="form-inline" asp-controller="Account" asp-action="Logout" method="post">
+                                    <button type="submit" class="btn btn-custom text-dark">Logout</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item" id="Login">
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                            </li>
+                            <li class="nav-item" id="Register">
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                            </li>
+                        }
+                    </ul>
                 </div>
             </div>
         </nav>
@@ -78,7 +122,6 @@
             @RenderBody()
         </main>
     </div>
-
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
