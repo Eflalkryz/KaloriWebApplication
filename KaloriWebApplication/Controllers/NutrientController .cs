@@ -35,7 +35,7 @@ namespace KaloriWebApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveUserNutrient(int nutrientId, decimal quantity)
+        public IActionResult SaveUserNutrient(int nutrientId, decimal totalQuantity)
         {
             var userId = HttpContext.Session.GetInt32("UserID");
             if (userId == null)
@@ -55,7 +55,7 @@ namespace KaloriWebApplication.Controllers
                 return BadRequest("Invalid calorie value.");
             }
 
-            int totalCalories = (int)(calsPer100GramsValue * (quantity / 100));
+            int totalCalories = (int)(calsPer100GramsValue * (totalQuantity / 100));
 
             var today = DateTime.Today;
 
@@ -82,7 +82,7 @@ namespace KaloriWebApplication.Controllers
             {
                 UserID = userId.Value,
                 NutrientID = nutrientId,
-                Quantity = quantity,
+                Quantity = totalQuantity,
                 DateLogged = DateTime.Now
             };
 
