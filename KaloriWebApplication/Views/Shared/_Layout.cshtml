@@ -23,7 +23,7 @@
 
             .navbar-nav .nav-link:hover {
                 color: #FFFFFF; /* Beyaz metin */
-                background-color: #388E3C; /* Hafifçe koyu yeşil hover arka plan */
+                background-color: #AF8F6F; 
             }
 
         .navbar-toggler-icon {
@@ -56,24 +56,23 @@
             .logout-link:hover {
                 text-decoration: underline;
             }
-        #Login{
+
+        #Login, #Register, #Logout {
             background-color: cadetblue;
             border: 1px solid;
-            border-radius:10px
+            border-radius: 10px;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 5px;
         }
 
-        #Register {
-            background-color: cadetblue;
-            border: 1px solid;
-            border-radius: 10px
-
-        }
-        
-        #Logout{
-            background-color: cadetblue;
-            border: 1px solid;
-            border-radius: 10px
-        }
+            #Login a:hover, #Register a:hover, #Logout button:hover {
+                background-color: cadetblue; /* Hover durumunda da aynı arka plan rengi */
+                color: white; /* Beyaz metin */
+            }
     </style>
 </head>
 <body id="fig">
@@ -86,15 +85,27 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                    <ul class="navbar-nav me-auto">
+                        @if (HttpContextAccessor.HttpContext.Session.GetInt32("UserID") != null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Dashboard">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
+                        }
                     </ul>
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav ms-auto">
                         @if (HttpContextAccessor.HttpContext.Session.GetInt32("UserID") != null)
                         {
                             <li class="nav-item" id="Logout">
@@ -117,6 +128,7 @@
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
