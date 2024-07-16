@@ -110,6 +110,7 @@ namespace KaloriWebApplication.Controllers
 
             var result = userNutrients.Select(un => new
             {
+                userNutrientId = un.UserNutrientID,
                 dateLogged = un.DateLogged,
                 caloryNutrient = new
                 {
@@ -160,6 +161,7 @@ namespace KaloriWebApplication.Controllers
 
             var result = userNutrients.Select(un => new
             {
+                userNutrientId = un.UserNutrientID,
                 dateLogged = un.DateLogged,
                 caloryNutrient = new
                 {
@@ -189,8 +191,47 @@ namespace KaloriWebApplication.Controllers
 
             int dailyCalories = user.DailyCalories ?? 0;
 
-            // JSON olarak success ve dailyCalories değerlerini döndürüyoruz.
             return Json(new { success = true, dailyCalories });
+        }
+
+        [HttpPost]
+        public JsonResult DeleteUserNutrient(int userNutrientId)
+        {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null)
+            {
+                return Json(new { success = false, message = "User not logged in" });
+            }
+
+            var userNutrient = _context.UserNutrients.Include(un => un.CaloryNutrient)
+                .FirstOrDefault(un => un.UserNutrientID == userNutrientId && un.UserID == userId);
+
+            if (userNutrient == null)
+            {
+                return Json(new { success = false, message = "Nutrient not found" });
+            }
+
+            var calsPer100Grams = userNutrient.CaloryNutrient.Cals_per100grams?.Replace(" cal", "") ?? "0";
+            if (!int.TryParse(calsPer100Grams, out int calsPer100GramsValue))
+            {
+                return Json(new { success = false, message = "Invalid calorie value" });
+            }
+
+            int totalCalories = (int)(calsPer100GramsValue * (userNutrient.Quantity / 100));
+
+            var today = DateTime.Today;
+            var existingCalory = _context.TotalCalories.FirstOrDefault(c => c.UserID == userId && c.CaloryDate == today);
+
+            if (existingCalory != null)
+            {
+                existingCalory.TotalCal -= totalCalories;
+                _context.TotalCalories.Update(existingCalory);
+            }
+
+            _context.UserNutrients.Remove(userNutrient);
+            _context.SaveChanges();
+
+            return Json(new { success = true, message = "Nutrient deleted" });
         }
     }
 }

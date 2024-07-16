@@ -33,6 +33,7 @@
                     <th>Besin</th>
                     <th>Miktar (gram)</th>
                     <th>Kalori (100 gram başına)</th>
+                    <th>Aksiyon</th>
                 </tr>
             </thead>
             <tbody id="nutrientsBody">
@@ -110,6 +111,7 @@
                                         + '<td>' + item.caloryNutrient.foodItem + '</td>'
                                         + '<td>' + item.quantity + '</td>'
                                         + '<td>' + caloriesPer100Grams + ' cal</td>'
+                                        + '<td><button class="btn btn-danger btn-delete" data-id="' + item.userNutrientId + '">Sil</button></td>'
                                         + '</tr>';
                                     nutrientsBody.append(row);
                                 });
@@ -141,7 +143,7 @@
 
                                 $('#nutrientsTable').show();
                             } else {
-                                nutrientsBody.append('<tr><td colspan="4">Kayıt bulunamadı</td></tr>');
+                                nutrientsBody.append('<tr><td colspan="5">Kayıt bulunamadı</td></tr>');
                                 $('#totalCalories').text('');
                                 $('#nutrientsTable').show();
                             }
@@ -153,6 +155,26 @@
                 } else {
                     alert('Lütfen bir tarih seçin.');
                 }
+            });
+
+            $('#nutrientsBody').on('click', '.btn-delete', function () {
+                var nutrientId = $(this).data('id');
+                $.ajax({
+                    url: '@Url.Action("DeleteUserNutrient", "Nutrient")',
+                    type: 'POST',
+                    data: { userNutrientId: nutrientId },
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            $('#showNutrientsButton').click();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Besin silinirken hata oluştu.');
+                    }
+                });
             });
 
             function updateChart(consumedCalories, dailyCalories) {
