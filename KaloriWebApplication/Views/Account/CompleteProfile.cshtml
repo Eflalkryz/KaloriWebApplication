@@ -8,24 +8,24 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-green text-white">
                     <h2 class="text-center">Complete Your Profile</h2>
                 </div>
                 <div class="card-body">
                     <form asp-action="CompleteProfile" method="post">
                         <input type="hidden" asp-for="UserID" />
                         <div class="form-group">
-                            <label asp-for="Name" class="text-primary">Name</label>
+                            <label asp-for="Name" class="text-green">Name</label>
                             <input asp-for="Name" class="form-control" />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Age" class="text-primary">Age</label>
+                            <label asp-for="Age" class="text-green">Age</label>
                             <input asp-for="Age" type="number" class="form-control" />
                             <span asp-validation-for="Age" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Gender" class="text-primary">Gender</label>
+                            <label asp-for="Gender" class="text-green">Gender</label>
                             <select asp-for="Gender" class="form-control">
                                 <option value="">Select Gender</option>
                                 <option value="Male">Male</option>
@@ -35,17 +35,17 @@
                             <span asp-validation-for="Gender" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Height" class="text-primary">Height (cm)</label>
+                            <label asp-for="Height" class="text-green">Height (cm)</label>
                             <input asp-for="Height" type="number" class="form-control" />
                             <span asp-validation-for="Height" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Weight" class="text-primary">Weight (kg)</label>
+                            <label asp-for="Weight" class="text-green">Weight (kg)</label>
                             <input asp-for="Weight" type="number" class="form-control" />
                             <span asp-validation-for="Weight" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="ActivityLevel" class="text-primary">Activity Level</label>
+                            <label asp-for="ActivityLevel" class="text-green">Activity Level</label>
                             <select asp-for="ActivityLevel" class="form-control">
                                 <option value="">Select Activity Level</option>
                                 <option value="Sedentary">Sedentary (little or no exercise)</option>
@@ -57,7 +57,7 @@
                             <span asp-validation-for="ActivityLevel" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Goal" class="text-primary">Goal</label>
+                            <label asp-for="Goal" class="text-green">Goal</label>
                             <select asp-for="Goal" class="form-control">
                                 <option value="">Select Goal</option>
                                 <option value="Maintain Weight">Maintain Weight</option>
@@ -67,11 +67,11 @@
                             <span asp-validation-for="Goal" class="text-danger"></span>
                         </div>
                         <input type="hidden" asp-for="DailyCalories" />
-                        <button type="submit" class="btn btn-primary btn-block">Save Profile</button>
+                        <button type="submit" class="btn btn-green btn-block">Save Profile</button>
                     </form>
                 </div>
                 <div class="card-footer bg-light">
-                    <p class="text-center">Return to <a asp-controller="Account" asp-action="Dashboard" class="text-primary">Dashboard</a></p>
+                    <p class="text-center">Return to <a asp-controller="Account" asp-action="Dashboard" class="text-green">Dashboard</a></p>
                 </div>
             </div>
         </div>
@@ -83,3 +83,28 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+<style>
+    .card-header {
+        background-color: #388E3C; /* Hafifçe koyu yeşil */
+        color: #FFFFFF; /* Beyaz metin */
+    }
+
+    .text-green {
+        color: #388E3C !important; /* Hafifçe koyu yeşil */
+    }
+
+    .btn-green {
+        background-color: #388E3C;
+        border-color: #388E3C;
+    }
+
+        .btn-green:hover {
+            background-color: #2E7D32;
+            border-color: #2E7D32;
+        }
+
+    .text-danger {
+        color: #D32F2F !important; /* Kırmızı */
+    }
+</style>
