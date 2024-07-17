@@ -191,6 +191,7 @@ namespace KaloriWebApplication.Controllers
 
             int dailyCalories = user.DailyCalories ?? 0;
 
+
             return Json(new { success = true, dailyCalories });
         }
 

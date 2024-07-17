@@ -6,6 +6,17 @@
         background-color: rgba(192, 192, 192, 0.3);
         padding: 20px;
     }
+
+    #calorieWarning {
+        width: 50%; 
+        margin: 0 auto; 
+        text-align: center; 
+        padding: 10px; 
+        font-weight: bold; 
+        color: red;
+
+    }
+
 </style>
 
 <div class="menu-icon" onclick="toggleMenu()">
@@ -51,12 +62,16 @@
     <div class="chart-container" style="margin-top: 20px;">
         <canvas id="dailyCaloriesChart"></canvas>
     </div>
+    <div id="calorieWarning"></div>
 </div>
 
 @section Scripts {
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/js/site.js"></script>
     <script>
+        var dailyCalories = 0;
+        var consumedCalories = 0;
         $(document).ready(function () {
             var ctx = document.getElementById('dailyCaloriesChart').getContext('2d');
             var chart = new Chart(ctx, {
@@ -65,7 +80,7 @@
                     labels: ['Tüketilen Kaloriler', 'Kalan Kaloriler'],
                     datasets: [{
                         label: 'Günlük Kaloriler',
-                        data: [0, 0],
+                        data: [totalCalories, dailyCalories - totalCalories],
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.5)', // Tüketilen Kaloriler
                             'rgba(54, 162, 235, 0.5)'  // Kalan Kaloriler
@@ -86,7 +101,9 @@
                     },
                     title: {
                         display: true,
-                        text: 'Günlük Kalori Durumu'
+                        text: 'Günlük Kalori Durumu',
+                       
+
                     }
                 }
             });
@@ -126,8 +143,8 @@
                                             url: '@Url.Action("DailyCalories", "Nutrient")',
                                             type: 'GET',
                                             success: function (dailyResponse) {
-                                                var dailyCalories = dailyResponse.success ? dailyResponse.dailyCalories : 0;
-                                                var consumedCalories = caloriesResponse.success ? caloriesResponse.totalCalories : 0;
+                                                dailyCalories = dailyResponse.success ? dailyResponse.dailyCalories : 0;
+                                                consumedCalories = caloriesResponse.success ? caloriesResponse.totalCalories : 0;
 
                                                 updateChart(consumedCalories, dailyCalories);
                                             },
@@ -178,9 +195,14 @@
             });
 
             function updateChart(consumedCalories, dailyCalories) {
-                var remainingCalories = dailyCalories - consumedCalories;
-                chart.data.datasets[0].data = [consumedCalories, remainingCalories];
+                var isExceeded = consumedCalories > dailyCalories;
+
+                chart.data.datasets[0].data = [consumedCalories, dailyCalories - consumedCalories];
+                chart.data.datasets[0].backgroundColor = isExceeded ? ['rgba(255, 0, 0, 0.5)', 'rgba(255, 0, 0, 0.2)'] : ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)'];
                 chart.update();
+
+                var warningMessage = isExceeded ? `Günlük kalori limitini ${consumedCalories - dailyCalories} kalori aştınız!` : '';
+                $('#calorieWarning').text(warningMessage);
             }
         });
     </script>
