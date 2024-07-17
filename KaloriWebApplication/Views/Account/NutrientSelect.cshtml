@@ -17,6 +17,11 @@
     </div>
 
     <div class="form-group">
+        <label for="foodItemSearch">Search Food Item:</label>
+        <input type="text" id="foodItemSearch" class="form-control" placeholder="Type to search...">
+    </div>
+
+    <div class="form-group">
         <label for="foodItemDropdown">Select Food Item:</label>
         <select id="foodItemDropdown" class="form-control" name="nutrientId">
             <option value="">-- Select Food Item --</option>
@@ -37,7 +42,6 @@
             <option value="8">8 Portions (800 grams)</option>
             <option value="9">9 Portions (900 grams)</option>
             <option value="10">10 Portions (1000 grams)</option>
-            <!-- Add more options as needed -->
         </select>
     </div>
 
@@ -59,11 +63,20 @@
     <script>
         $(function () {
             $('#categoryDropdown').change(function () {
-                var category = $(this).val();
+                updateFoodItems();
+            });
+
+            $('#foodItemSearch').on('input', function () {
+                updateFoodItems();
+            });
+
+            function updateFoodItems() {
+                var category = $('#categoryDropdown').val();
+                var searchQuery = $('#foodItemSearch').val();
                 $.ajax({
                     url: '@Url.Action("GetFoodItems", "Nutrient")',
                     type: 'GET',
-                    data: { category: category },
+                    data: { category: category, searchQuery: searchQuery },
                     success: function (response) {
                         var foodItemDropdown = $('#foodItemDropdown');
                         foodItemDropdown.empty(); // Clear existing options
@@ -79,7 +92,7 @@
                         alert('Error fetching food items.');
                     }
                 });
-            });
+            }
 
             function updateTotalQuantity() {
                 var portions = parseFloat($('#portionDropdown').val()) || 0;

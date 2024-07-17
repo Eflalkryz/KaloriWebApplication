@@ -24,12 +24,21 @@ namespace KaloriWebApplication.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetFoodItems(string category)
+        public JsonResult GetFoodItems(string category, string searchQuery)
         {
-            var foodItems = _context.CaloryNutrients
-                .Where(n => n.FoodCategory == category)
-                .Select(n => new { id = n.NutrientID, name = n.FoodItem })
-                .ToList();
+            var foodItemsQuery = _context.CaloryNutrients.AsQueryable();
+
+            if (!string.IsNullOrEmpty(category))
+            {
+                foodItemsQuery = foodItemsQuery.Where(n => n.FoodCategory == category);
+            }
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                foodItemsQuery = foodItemsQuery.Where(n => n.FoodItem.Contains(searchQuery));
+            }
+
+            var foodItems = foodItemsQuery.Select(n => new { id = n.NutrientID, name = n.FoodItem }).ToList();
 
             return Json(foodItems);
         }
@@ -190,7 +199,6 @@ namespace KaloriWebApplication.Controllers
             }
 
             int dailyCalories = user.DailyCalories ?? 0;
-
 
             return Json(new { success = true, dailyCalories });
         }
