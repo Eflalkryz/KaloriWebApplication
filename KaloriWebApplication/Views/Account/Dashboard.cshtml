@@ -13,7 +13,7 @@
         text-align: center; 
         padding: 10px; 
         font-weight: bold; 
-        color: red;
+        color: darkred;
 
     }
 
@@ -201,7 +201,7 @@
                 chart.data.datasets[0].backgroundColor = isExceeded ? ['rgba(255, 0, 0, 0.5)', 'rgba(255, 0, 0, 0.2)'] : ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)'];
                 chart.update();
 
-                var warningMessage = isExceeded ? `Günlük kalori limitini ${consumedCalories - dailyCalories} kalori aştınız!` : '';
+                var warningMessage = isExceeded ? `Günlük kalori limitiniz: ${dailyCalories}. Limitinizi ${consumedCalories - dailyCalories} kalori aştınız!` : '';
                 $('#calorieWarning').text(warningMessage);
             }
         });
