@@ -14,6 +14,7 @@ namespace KaloriWebApplication.Controllers
             _context = context;
         }
 
+
         [HttpGet]
         public IActionResult Login()
         {
@@ -55,6 +56,7 @@ namespace KaloriWebApplication.Controllers
         {
             return View();
         }
+       
 
         [HttpPost]
         public IActionResult Register(User model)
@@ -216,7 +218,10 @@ namespace KaloriWebApplication.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
         }
-
+        public IActionResult DailyWeeklyReports()
+        {
+            return View();
+        }
 
 
     }

@@ -4,6 +4,7 @@ using KaloriWebApplication.Models.Concrete;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System;
+using System.Security.Claims;
 
 namespace KaloriWebApplication.Controllers
 {
@@ -100,6 +101,7 @@ namespace KaloriWebApplication.Controllers
 
             return RedirectToAction("NutrientSelect");
         }
+
 
         [HttpGet]
         public JsonResult GetUserNutrients()
@@ -242,5 +244,10 @@ namespace KaloriWebApplication.Controllers
 
             return Json(new { success = true, message = "Nutrient deleted" });
         }
+       
+
+
+
+
     }
 }

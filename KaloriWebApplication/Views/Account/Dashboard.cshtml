@@ -8,15 +8,13 @@
     }
 
     #calorieWarning {
-        width: 50%; 
-        margin: 0 auto; 
-        text-align: center; 
-        padding: 10px; 
-        font-weight: bold; 
+        width: 50%;
+        margin: 0 auto;
+        text-align: center;
+        padding: 10px;
+        font-weight: bold;
         color: darkred;
-
     }
-
 </style>
 
 <div class="menu-icon" onclick="toggleMenu()">
@@ -26,7 +24,7 @@
 <div class="menu" id="menu">
     <a asp-controller="Profile" asp-action="ProfileEditing">Profil</a>
     <a asp-controller="Nutrient" asp-action="NutrientSelect">Besin Girişi</a>
-    <a asp-controller="Profile" asp-action="ProfileEditing">Günlük-Haftalık Raporlar</a>
+    <a asp-controller="Account" asp-action="DailyWeeklyReports">Günlük-Haftalık Raporlar</a> <!-- Yeni bağlantı -->
     <a asp-controller="Account" asp-action="ProfileUpdating">Bildirimler</a>
 </div>
 
@@ -66,7 +64,6 @@
 </div>
 
 @section Scripts {
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/js/site.js"></script>
     <script>
@@ -102,8 +99,6 @@
                     title: {
                         display: true,
                         text: 'Günlük Kalori Durumu',
-                       
-
                     }
                 }
             });

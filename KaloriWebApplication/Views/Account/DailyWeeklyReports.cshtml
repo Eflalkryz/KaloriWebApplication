@@ -1,0 +1,144 @@
+﻿namespace KaloriWebApplication.Views.Account
+@{
+    ViewData["Title"] = "Günlük ve Haftalık Raporlar";
+}
+
+<style>
+    .report-container {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+        background-color: rgba(192, 192, 192, 0.3);
+    }
+
+    .report-section {
+        flex: 1;
+        margin: 0 10px;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+        .report-section h2 {
+            color: #004085;
+            margin-bottom: 20px;
+        }
+
+        .report-section .info {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+            .report-section .info span {
+                font-weight: normal;
+            }
+
+        .report-section ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+            .report-section ul li {
+                margin-bottom: 5px;
+            }
+</style>
+
+<div class="report-container">
+    <div class="report-section" id="dailyReport">
+        <h2>Günlük Rapor</h2>
+        <div class="info">Tarih: <span id="dailyDate"></span></div>
+        <div class="info">Toplam Kalori: <span id="dailyTotalCalories">0 cal</span></div>
+        <h3>Tüketilen Gıdalar</h3>
+        <ul id="dailyNutrientsList">
+            <li>Loading...</li>
+        </ul>
+    </div>
+    <div class="report-section" id="weeklyReport">
+        <h2>Haftalık Rapor</h2>
+        <div class="info">Hafta Başlangıç Tarihi: <span id="weekStartDate"></span></div>
+        <div class="info">Hafta Bitiş Tarihi: <span id="weekEndDate"></span></div>
+        <div class="info">Toplam Kalori: <span id="weeklyTotalCalories">Loading... cal</span></div>
+        <h3>Tüketilen Gıdalar</h3>
+        <ul id="weeklyNutrientsList">
+            <li>Loading...</li>
+        </ul>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var today = new Date();
+            var dailyDateString = today.toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' });
+            $('#dailyDate').text(dailyDateString);
+
+            var weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
+            var weekEnd = new Date(today.setDate(today.getDate() - today.getDay() + 6));
+            var weekStartString = weekStart.toLocaleDateString('tr-TR', { year: 'numeric', month: 'short', day: 'numeric' });
+            var weekEndString = weekEnd.toLocaleDateString('tr-TR', { year: 'numeric', month: 'short', day: 'numeric' });
+            $('#weekStartDate').text(weekStartString);
+            $('#weekEndDate').text(weekEndString);
+
+            // Daily Report
+            $.ajax({
+                url: '@Url.Action("GetUserNutrientsByDate", "Nutrient")',
+                type: 'GET',
+                data: { date: today },
+                success: function (response) {
+                    if (response.success) {
+                        var dailyNutrientsList = $('#dailyNutrientsList');
+                        dailyNutrientsList.empty();
+                        var totalCalories = 0;
+
+                        $.each(response.data, function (index, item) {
+                            var caloriesPer100Grams = parseInt(item.caloryNutrient.cals_per100grams.replace(" cal", "")) || 0;
+                            var totalCaloriesPerItem = (item.quantity / 100 * caloriesPer100Grams).toFixed(2);
+                            totalCalories += parseFloat(totalCaloriesPerItem);
+
+                            var listItem = '<li>' + item.caloryNutrient.foodItem + ' - ' + item.quantity + ' grams</li>';
+                            dailyNutrientsList.append(listItem);
+                        });
+
+                        $('#dailyTotalCalories').text(totalCalories + ' cal');
+                    } else {
+                        $('#dailyNutrientsList').html('<li>' + response.message + '</li>');
+                    }
+                },
+                error: function () {
+                    alert('Besin kayıtlarını çekerken hata oluştu.');
+                }
+            });
+
+            // Weekly Report
+            $.ajax({
+                url: '@Url.Action("GetUserNutrientsByWeek", "Nutrient")',
+                type: 'GET',
+                data: { startDate: weekStart, endDate: weekEnd },
+                success: function (response) {
+                    if (response.success) {
+                        var weeklyNutrientsList = $('#weeklyNutrientsList');
+                        weeklyNutrientsList.empty();
+                        var totalWeeklyCalories = 0;
+
+                        $.each(response.data, function (index, item) {
+                            var caloriesPer100Grams = parseInt(item.caloryNutrient.cals_per100grams.replace(" cal", "")) || 0;
+                            var totalCaloriesPerItem = (item.quantity / 100 * caloriesPer100Grams).toFixed(2);
+                            totalWeeklyCalories += parseFloat(totalCaloriesPerItem);
+
+                            var listItem = '<li>' + item.caloryNutrient.foodItem + ' - ' + item.quantity + ' grams</li>';
+                            weeklyNutrientsList.append(listItem);
+                        });
+
+                        $('#weeklyTotalCalories').text(totalWeeklyCalories + ' cal');
+                    } else {
+                        $('#weeklyNutrientsList').html('<li>' + response.message + '</li>');
+                    }
+                },
+                error: function () {
+                    alert('Haftalık besin kayıtlarını çekerken hata oluştu.');
+                }
+            });
+        });
+    </script>
+}

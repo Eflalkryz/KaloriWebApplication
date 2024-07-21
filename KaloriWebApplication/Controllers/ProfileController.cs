@@ -32,6 +32,7 @@ namespace KaloriWebApplication.Controllers
 
             return View(user);
         }
+        
 
         [HttpPost]
         public IActionResult ProfileEditing(User model)
