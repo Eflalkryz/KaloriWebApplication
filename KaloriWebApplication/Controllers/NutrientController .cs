@@ -244,7 +244,34 @@ namespace KaloriWebApplication.Controllers
 
             return Json(new { success = true, message = "Nutrient deleted" });
         }
-       
+
+
+        [HttpGet]
+        public JsonResult GetWeeklyCalories()
+        {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            var startDate = DateTime.Today.AddDays(-6); 
+            var endDate = DateTime.Today;
+
+            var weeklyCalories = new List<object>();
+
+            for (DateTime date = startDate; date <= endDate; date = date.AddDays(1))
+            {
+                var caloriesForDate = _context.TotalCalories
+                    .Where(tc => tc.UserID == userId && tc.CaloryDate == date)
+                    .Select(tc => tc.TotalCal)
+                    .FirstOrDefault();
+
+                weeklyCalories.Add(new
+                {
+                    Date = date,
+                    TotalCalories = caloriesForDate != 0 ? caloriesForDate : 0
+                });
+            }
+
+            return Json(weeklyCalories);
+        }
+
 
 
 
