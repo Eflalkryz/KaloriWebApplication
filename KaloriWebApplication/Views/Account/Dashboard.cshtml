@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Dashboard";
+    Layout = "_dashlayout";
 }
 <style>
     .content {
@@ -42,16 +43,7 @@
     }
 </style>
 
-<div class="menu-icon" onclick="toggleMenu()">
-    &#9776;
-</div>
 
-<div class="menu" id="menu">
-    <a asp-controller="Profile" asp-action="ProfileEditing">Profil</a>
-    <a asp-controller="Nutrient" asp-action="NutrientSelect">Besin Girişi</a>
-    <a asp-controller="Account" asp-action="DailyWeeklyReports">Günlük-Haftalık Raporlar</a> <!-- Yeni bağlantı -->
-    <a asp-controller="Account" asp-action="ProfileUpdating">Bildirimler</a>
-</div>
 
 <div class="chart-container" id="weekly-chart">
     <div class="container-title">7 Günlük Besin Girişi</div>
