@@ -1,7 +1,7 @@
-/* Önceki CSS kodlarý buraya gelecek */
+
 
 .menu {
-    display: none; /* Baþlangýçta menü gizli olsun */
+    display: none; 
     position: absolute;
     background-color: #f9f9f9;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
@@ -24,16 +24,16 @@
 }
 
 .menu-icon {
-    color: black; /* Menü simgesi rengi siyah olarak ayarlandý */
-    cursor: pointer; /* Mouse'un üstüne geldiðinde el simgesi göster */
+    color: black; 
+    cursor: pointer; 
 }
 
     .menu-icon:hover {
-        color: #258cfb; /* Menü simgesi rengi maviye döndürüldü */
+        color: #258cfb; 
     }
 
 .show-menu {
-    display: block; /* show-menu sýnýfý eklendiðinde menüyü göster */
+    display: block; 
 }
 
 

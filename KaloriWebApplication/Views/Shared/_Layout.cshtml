@@ -30,14 +30,10 @@
             background-color: #FFFFFF; /* Beyaz menü simgesi */
         }
 
-        footer {
-            background-color: rgba(47, 23, 15, 0.5); /* Açık gri arka plan */
-            padding: 10px 0;
-            text-align: center;
-        }
+
 
         body {
-            background: linear-gradient(rgba(47, 23, 15, 0.65), rgba(47, 23, 15, 0.65)), url("/lib/deneme.jpeg");
+            background: linear-gradient(rgba(47, 23, 15, 0.5), rgba(47, 23, 15, 0.5)), url("/lib/colorful.jpeg");
             background-attachment: fixed;
             background-position: center;
             background-size: cover;
@@ -85,26 +81,6 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav me-auto">
-                        @if (HttpContextAccessor.HttpContext.Session.GetInt32("UserID") != null)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Dashboard">Dashboard</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>
-                        }
-                    </ul>
                     <ul class="navbar-nav ms-auto">
                         @if (HttpContextAccessor.HttpContext.Session.GetInt32("UserID") != null)
                         {
