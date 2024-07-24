@@ -87,5 +87,13 @@ namespace KaloriWebApplication.Controllers
 
             return Json(new { success = true, data = result });
         }
+
+        
+        public IActionResult notification()
+        {
+            return View("~/Views/Account/notification.cshtml");
+        }
+
+       
     }
 }
