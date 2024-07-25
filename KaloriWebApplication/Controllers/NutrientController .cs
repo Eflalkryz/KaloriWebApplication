@@ -247,30 +247,38 @@ namespace KaloriWebApplication.Controllers
 
 
         [HttpGet]
-        public JsonResult GetWeeklyCalories()
+        public JsonResult GetWeeklyCalories(DateTime? startDate, DateTime? endDate)
         {
             var userId = HttpContext.Session.GetInt32("UserID");
-            var startDate = DateTime.Today.AddDays(-6); 
-            var endDate = DateTime.Today;
+            startDate ??= DateTime.Today.AddDays(-6);
+            endDate ??= DateTime.Today;
+
+            // Eğer tarih aralığı ters ise, düzeltilir.
+            if (startDate > endDate)
+            {
+                return Json(new { error = "Başlangıç tarihi bitiş tarihinden büyük olamaz." });
+            }
 
             var weeklyCalories = new List<object>();
 
-            for (DateTime date = startDate; date <= endDate; date = date.AddDays(1))
+            for (DateTime date = startDate.Value; date <= endDate.Value; date = date.AddDays(1))
             {
                 var caloriesForDate = _context.TotalCalories
-                    .Where(tc => tc.UserID == userId && tc.CaloryDate == date)
+                    .Where(tc => tc.UserID == userId && tc.CaloryDate == date.Date)
                     .Select(tc => tc.TotalCal)
                     .FirstOrDefault();
 
                 weeklyCalories.Add(new
                 {
-                    Date = date,
+                    Date = date.ToString("yyyy-MM-dd"), // Tarihi string olarak döndürüyoruz.
                     TotalCalories = caloriesForDate != 0 ? caloriesForDate : 0
                 });
             }
 
             return Json(weeklyCalories);
         }
+
+
 
 
 
