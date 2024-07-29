@@ -97,10 +97,45 @@ namespace KaloriWebApplication.Controllers
             };
 
             _context.UserNutrients.Add(userNutrient);
+
+            // Kullanıcının günlük kalori limitini kontrol et ve gerekirse bildirim ekle
+            var user = _context.Users.Find(userId);
+            if (user != null && existingCalory != null)
+            {
+                int dailyCalorieLimit = user.DailyCalories ?? 0;
+                
+
+                if (existingCalory.TotalCal > dailyCalorieLimit)
+                {
+                    var notification = new notification
+                    {
+                        UserID = userId.Value,
+                        notificationText = "Aştınız",
+                        notificationDate = DateTime.Now
+                    };
+
+                    _context.notifications.Add(notification);
+                }
+                else if (existingCalory.TotalCal>dailyCalorieLimit-500)
+                {
+                    var notification = new notification
+                    {
+                        UserID = userId.Value,
+                        notificationText = "aşmaya yaklaştınız",
+                        notificationDate = DateTime.Now
+                    };
+
+                    _context.notifications.Add(notification);   
+                }
+
+                
+            }
             _context.SaveChanges();
+            
 
             return RedirectToAction("NutrientSelect");
         }
+
 
 
         [HttpGet]
@@ -152,11 +187,12 @@ namespace KaloriWebApplication.Controllers
                 return Json(new { success = true, totalCalories = totalCalories.TotalCal });
             }
 
-            
-
-
+            TempData["daily"] = totalCalories;
+           
             return Json(new { success = false, message = "No data found for the selected date" });
         }
+
+        
 
         [HttpGet]
         public JsonResult GetUserNutrientsByDate(DateTime date)
@@ -207,6 +243,31 @@ namespace KaloriWebApplication.Controllers
 
             return Json(new { success = true, dailyCalories });
         }
+
+        [HttpPost]
+        public IActionResult NotificationSave()
+        {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+                var not = new notification
+                {
+                    UserID = userId.Value, 
+                    notificationText = "Aştınız",
+                    notificationDate = DateTime.Now
+                };
+
+               
+                 _context.notifications.Add(not);
+                 _context.SaveChanges();
+            
+
+            return View();
+        }
+
 
         [HttpPost]
         public JsonResult DeleteUserNutrient(int userNutrientId)

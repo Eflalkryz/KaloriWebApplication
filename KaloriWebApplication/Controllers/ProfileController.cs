@@ -91,6 +91,8 @@ namespace KaloriWebApplication.Controllers
                 default:
                     return bmr;
             }
+
+           
         }
 
         private double CalculateBMR(User user)

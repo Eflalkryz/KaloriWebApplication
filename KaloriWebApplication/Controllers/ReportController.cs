@@ -88,17 +88,10 @@ namespace KaloriWebApplication.Controllers
             return Json(new { success = true, data = result });
         }
 
-        
+        [HttpGet]
         public IActionResult notification()
         {
-            var userId = HttpContext.Session.GetInt32("UserID");
-            if (userId == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            
-
+           
             return View("~/Views/Account/notification.cshtml");
         }
 

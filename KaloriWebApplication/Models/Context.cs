@@ -20,6 +20,8 @@ namespace KaloriWebApplication.Models
         public DbSet<UserNutrient> UserNutrients { get; set; }
         public DbSet<TotalCalory> TotalCalories { get; set; }
 
+        public DbSet<notification> notifications { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,6 +29,12 @@ namespace KaloriWebApplication.Models
                 .HasOne(un => un.CaloryNutrient)
                 .WithMany()
                 .HasForeignKey(un => un.NutrientID);
+
+            modelBuilder.Entity<notification>(entity =>
+            {
+                entity.HasKey(e => e.notificationID); 
+                entity.Property(e => e.notificationID).ValueGeneratedOnAdd(); 
+            });
 
             base.OnModelCreating(modelBuilder);
         }

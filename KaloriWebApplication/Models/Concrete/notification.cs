@@ -6,12 +6,13 @@ namespace KaloriWebApplication.Models.Concrete
     {
         [Key]
         public int notificationID { get; set; }
-        public DateTime notificationEntryDate { get; set; }
-        public string notificationTitle { get; set;}
+       
+        public string notificationText { get; set; }
         
-        public int UserID { get; set; } 
+        public DateTime notificationDate { get; set; }
+        
+        public int UserID { get; set; }
+        
+        
     }
 }
-
-
-
