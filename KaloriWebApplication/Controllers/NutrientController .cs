@@ -152,6 +152,9 @@ namespace KaloriWebApplication.Controllers
                 return Json(new { success = true, totalCalories = totalCalories.TotalCal });
             }
 
+            
+
+
             return Json(new { success = false, message = "No data found for the selected date" });
         }
 

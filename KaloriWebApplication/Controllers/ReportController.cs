@@ -91,6 +91,14 @@ namespace KaloriWebApplication.Controllers
         
         public IActionResult notification()
         {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            
+
             return View("~/Views/Account/notification.cshtml");
         }
 
