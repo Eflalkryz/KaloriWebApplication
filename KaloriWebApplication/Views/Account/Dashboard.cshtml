@@ -25,32 +25,36 @@
         margin-left: 20px;
     }
 
-
     #weekly-chart {
-        background-color: antiquewhite;
+        background-color: lightgrey;
         border-radius: 15px;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         border: 2px solid #ccc; /* Border eklemek için */
         margin-top: 20px;
         margin-bottom: 20px;
         margin-left: 20px;
-        margin-right:60px
+        margin-right: 60px;
     }
 
     .weekly-chart-wrapper {
-        max-width: 50%; 
-        margin-left: 20px; 
+        max-width: 50%;
+        margin-left: 20px;
     }
 </style>
 
-
-
+<div class="content">
+    <div class="date-range-warning">Lütfen görmek istediğiniz tarih aralığını seçiniz:</div>
+<input type="date" id="startDatePicker" class="form-control">
+<input type="date" id="endDatePicker" class="form-control">
+<button id="showWeeklyCaloriesButton" class="btn btn-primary">Haftalık Kalorileri Göster</button>
 <div class="chart-container" id="weekly-chart">
     <div class="container-title">7 Günlük Besin Girişi</div>
     <div class="weekly-chart-wrapper">
         <canvas id="weeklyCaloriesChart"></canvas>
     </div>
 </div>
+</div>
+
 
 <div class="content">
     <label for="datePicker">Tarih Seç:</label>
@@ -85,11 +89,6 @@
         <canvas id="dailyCaloriesChart"></canvas>
     </div>
     <div id="calorieWarning"></div>
-
-
-    <div class="chart-container" style="margin-top: 20px;">
-    <canvas id="weeklyCaloriesChart"></canvas>
-</div>
 </div>
 
 @section Scripts {
@@ -98,6 +97,7 @@
     <script>
         var dailyCalories = 0;
         var consumedCalories = 0;
+
         $(document).ready(function () {
             var ctx = document.getElementById('dailyCaloriesChart').getContext('2d');
             var chart = new Chart(ctx, {
@@ -174,6 +174,7 @@
                                             },
                                             error: function () {
                                                 alert('Günlük kalori bilgisini çekerken hata oluştu.');
+
                                             }
                                         });
                                     },
@@ -229,59 +230,91 @@
                 $('#calorieWarning').text(warningMessage);
             }
 
-            $.ajax({
-                url: '@Url.Action("GetWeeklyCalories", "Nutrient")',
-                type: 'GET',
-                success: function (response) {
-                    var dates = response.map(item => new Date(item.date).toLocaleDateString());
-                    var totalCalories = response.map(item => item.totalCalories);
+            function fetchWeeklyCalories(startDate, endDate) {
+                $.ajax({
+                    url: '@Url.Action("GetWeeklyCalories", "Nutrient")',
+                    type: 'GET',
+                    data: { startDate: startDate, endDate: endDate },
+                    success: function (response) {
+                        var dates = response.map(item => new Date(item.date).toLocaleDateString());
+                        var totalCalories = response.map(item => item.totalCalories);
 
-                    var ctx = document.getElementById('weeklyCaloriesChart').getContext('2d');
-                    var weeklyCaloriesChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: dates,
-                            datasets: [{
-                                label: 'Günlük Toplam Kaloriler',
-                                data: totalCalories,
-                                backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                                borderColor: 'rgba(0, 0, 0, 1)',
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            legend: {
-                                position: 'bottom'
-                            },
-                            title: {
-                                display: true,
-                                text: 'Son Bir Haftalık Kalori Tüketimi',
-                                fontColor: 'brown',
-                                fontSize: 18,
-                                fontStyle: 'bold'
-                            },
-                            scales: {
-                                xAxes: [{
-                                    ticks: {
-                                        fontColor: 'brown',
-                                        fontStyle: 'bold'
-                                    }
-                                }],
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero: true,
-                                        fontColor: 'brown',
-                                        fontStyle: 'bold'
-                                    }
-                                }]
-                            }
-                        }
-                    });
+                        weeklyCaloriesChart.data.labels = dates;
+                        weeklyCaloriesChart.data.datasets[0].data = totalCalories;
+                        weeklyCaloriesChart.update();
+                    },
+                    error: function () {
+                        alert('Haftalık kalori verilerini çekerken hata oluştu.');
+                    }
+                });
+            }
+
+            var ctxWeekly = document.getElementById('weeklyCaloriesChart').getContext('2d');
+            var weeklyCaloriesChart = new Chart(ctxWeekly, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Toplam Kaloriler',
+                        data: [],
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
                 },
-                error: function () {
-                    alert('Haftalık kalori verilerini çekerken hata oluştu.');
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            function fetchDailyCalories(date) {
+                $.ajax({
+                    url: '@Url.Action("GetTotalCaloriesByDate", "Nutrient")',
+                    type: 'GET',
+                    data: { date: date },
+                    success: function (caloriesResponse) {
+                        $('#totalCalories').text(caloriesResponse.success ? 'Toplam Kalori: ' + caloriesResponse.totalCalories : 'Veri bulunamadı');
+                        $.ajax({
+                            url: '@Url.Action("DailyCalories", "Nutrient")',
+                            type: 'GET',
+                            success: function (dailyResponse) {
+                                dailyCalories = dailyResponse.success ? dailyResponse.dailyCalories : 0;
+                                consumedCalories = caloriesResponse.success ? caloriesResponse.totalCalories : 0;
+
+                                updateChart(consumedCalories, dailyCalories);
+                            },
+                            error: function () {
+                                alert('Günlük kalori bilgisini çekerken hata oluştu.');
+                            }
+                        });
+                    },
+                    error: function () {
+                        alert('Toplam kalori verilerini çekerken hata oluştu.');
+                    }
+                });
+            }
+
+  
+            var today = new Date().toISOString().split('T')[0];
+            var past7Days = new Date();
+            past7Days.setDate(past7Days.getDate() - 6);
+            var last7Days = past7Days.toISOString().split('T')[0];
+            fetchWeeklyCalories(last7Days, today);
+            fetchDailyCalories(today);
+
+            $('#showWeeklyCaloriesButton').click(function () {
+                var startDate = $('#startDatePicker').val();
+                var endDate = $('#endDatePicker').val();
+                if (startDate && endDate) {
+                    fetchWeeklyCalories(startDate, endDate);
+                } else {
+                    alert('Lütfen başlangıç ve bitiş tarihlerini seçin.');
                 }
             });
         });

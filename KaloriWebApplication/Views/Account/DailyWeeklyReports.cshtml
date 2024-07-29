@@ -4,6 +4,7 @@
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
 
 <style>
     .header {
@@ -16,6 +17,10 @@
         .header h1 {
             margin: 0;
             color: #004085;
+        }
+
+        .header button {
+            margin-top: 10px;
         }
 
     .report-container {
@@ -73,6 +78,7 @@
 
 <div class="header">
     <h1>Günlük ve Haftalık Raporlar</h1>
+    <button id="exportWeeklyReport" class="btn btn-primary">Haftalık Raporu PDF Olarak İndir</button>
 </div>
 
 <div class="report-container">
@@ -103,8 +109,32 @@
     </div>
 </div>
 
+<!-- Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">Haftalık Rapor Önizleme</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="previewContent">
+                    <!-- Preview content will be injected here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                <button type="button" id="confirmDownload" class="btn btn-primary">PDF Olarak İndir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function () {
             const formatDate = (date) => {
@@ -154,7 +184,7 @@
 
             const renderChart = (chartId, data, label) => {
                 const ctx = document.getElementById(chartId).getContext('2d');
-                new Chart(ctx, {
+                const chart = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: data.map(item => item.caloryNutrient.foodItem),
@@ -175,6 +205,7 @@
                         }
                     }
                 });
+                return chart;
             };
 
             const today = new Date();
@@ -200,10 +231,87 @@
             fetchData('@Url.Action("GetUserNutrientsByWeek", "Report")', { startDate: formatDate(weekStart), endDate: formatDate(weekEnd) }, function (response) {
                 if (response.success) {
                     renderNutrientsList(response.data, '#weeklyNutrientsList', '#weeklyTotalCalories');
-                    renderChart('weeklyChart', response.data, 'Weekly Calories');
+                    const weeklyChart = renderChart('weeklyChart', response.data, 'Weekly Calories');
+                    // Store chart data for preview
+                    $('#weeklyChart').data('labels', response.data.map(item => item.caloryNutrient.foodItem));
+                    $('#weeklyChart').data('data', response.data.map(item => (item.quantity / 100 * parseInt(item.caloryNutrient.cals_per100grams.replace(" cal", "")) || 0).toFixed(2)));
                 } else {
                     $('#weeklyNutrientsList').html('<li>' + response.message + '</li>');
                 }
+            });
+
+            const { jsPDF } = window.jspdf;
+
+            $('#exportWeeklyReport').click(function () {
+                // Generate HTML content for preview
+                const previewContent = `
+                            <div>
+                                <h2>Haftalık Rapor</h2>
+                                <div id="previewWeeklyReport">
+                                    <div class="info">Hafta Başlangıç Tarihi: ${$('#weekStartDate').text()}</div>
+                                    <div class="info">Hafta Bitiş Tarihi: ${$('#weekEndDate').text()}</div>
+                                    <div class="info">Toplam Kalori: ${$('#weeklyTotalCalories').text()}</div>
+                                    <h3>Tüketilen Gıdalar</h3>
+                                    <ul>${$('#weeklyNutrientsList').html()}</ul>
+                                    <div class="chart-container">
+                                        <canvas id="previewWeeklyChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+
+                $('#previewContent').html(previewContent);
+
+                // Recreate the chart in the preview modal
+                const previewChartCtx = document.getElementById('previewWeeklyChart').getContext('2d');
+                new Chart(previewChartCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: $('#weeklyChart').data('labels'),
+                        datasets: [{
+                            label: 'Weekly Calories',
+                            data: $('#weeklyChart').data('data'),
+                            backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                            borderColor: 'rgba(0, 123, 255, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                $('#previewModal').modal('show');
+            });
+
+            $('#confirmDownload').click(function () {
+                html2canvas(document.querySelector("#previewWeeklyReport")).then(canvas => {
+                    const pdf = new jsPDF('p', 'pt', 'a4');
+                    const imgData = canvas.toDataURL('image/png');
+                    const imgWidth = 595.28;
+                    const pageHeight = 841.89;
+                    const imgHeight = canvas.height * imgWidth / canvas.width;
+                    let heightLeft = imgHeight;
+
+                    let position = 0;
+
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+
+                    while (heightLeft >= 0) {
+                        position = heightLeft - imgHeight;
+                        pdf.addPage();
+                        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                        heightLeft -= pageHeight;
+                    }
+
+                    pdf.save('haftalik_rapor.pdf');
+                });
             });
         });
     </script>
