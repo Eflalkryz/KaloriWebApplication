@@ -174,6 +174,7 @@
                                             },
                                             error: function () {
                                                 alert('Günlük kalori bilgisini çekerken hata oluştu.');
+
                                             }
                                         });
                                     },
@@ -272,12 +273,40 @@
                 }
             });
 
-            // İlk yükleme: Son 7 gün
+            function fetchDailyCalories(date) {
+                $.ajax({
+                    url: '@Url.Action("GetTotalCaloriesByDate", "Nutrient")',
+                    type: 'GET',
+                    data: { date: date },
+                    success: function (caloriesResponse) {
+                        $('#totalCalories').text(caloriesResponse.success ? 'Toplam Kalori: ' + caloriesResponse.totalCalories : 'Veri bulunamadı');
+                        $.ajax({
+                            url: '@Url.Action("DailyCalories", "Nutrient")',
+                            type: 'GET',
+                            success: function (dailyResponse) {
+                                dailyCalories = dailyResponse.success ? dailyResponse.dailyCalories : 0;
+                                consumedCalories = caloriesResponse.success ? caloriesResponse.totalCalories : 0;
+
+                                updateChart(consumedCalories, dailyCalories);
+                            },
+                            error: function () {
+                                alert('Günlük kalori bilgisini çekerken hata oluştu.');
+                            }
+                        });
+                    },
+                    error: function () {
+                        alert('Toplam kalori verilerini çekerken hata oluştu.');
+                    }
+                });
+            }
+
+  
             var today = new Date().toISOString().split('T')[0];
             var past7Days = new Date();
             past7Days.setDate(past7Days.getDate() - 6);
             var last7Days = past7Days.toISOString().split('T')[0];
             fetchWeeklyCalories(last7Days, today);
+            fetchDailyCalories(today);
 
             $('#showWeeklyCaloriesButton').click(function () {
                 var startDate = $('#startDatePicker').val();
