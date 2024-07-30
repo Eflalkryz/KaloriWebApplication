@@ -13,7 +13,8 @@ namespace KaloriWebApplication.Models.Concrete
         
         public int UserID { get; set; }
 
-        public string? isRead {  get; set; }        
+        public int isRead { get; set; }
+        
         
     }
 }

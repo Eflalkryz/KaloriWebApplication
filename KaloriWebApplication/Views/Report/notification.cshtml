@@ -1,4 +1,4 @@
-﻿﻿@model List<KaloriWebApplication.Models.Concrete.notification>
+﻿﻿@Model List<KaloriWebApplication.Models.Concrete.notification>
 
 @{
     Layout = "_dashlayout";
@@ -109,8 +109,8 @@
 
                 @foreach (var item in Model)
                 {
-        
-                    <div class="card unread">
+
+                    <div class="@(item.isRead == 0 ? "card unread" : "card")">
                         <div class="text">
                         <tr>
                             <td>@item.notificationText</td>

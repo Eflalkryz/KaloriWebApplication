@@ -44,29 +44,32 @@ namespace KaloriWebApplication.Controllers
             return Json(foodItems);
         }
 
+
         [HttpPost]
         public IActionResult SaveUserNutrient(int nutrientId, decimal totalQuantity)
         {
             var userId = HttpContext.Session.GetInt32("UserID");
             if (userId == null)
             {
+                TempData["ErrorMessage"] = "You need to be logged in to perform this action.";
                 return RedirectToAction("Login", "Account");
             }
 
             var nutrient = _context.CaloryNutrients.Find(nutrientId);
             if (nutrient == null)
             {
-                return BadRequest("Invalid nutrient selected.");
+                TempData["ErrorMessage"] = "Invalid nutrient selected.";
+                return RedirectToAction("NutrientSelect");
             }
 
             var calsPer100Grams = nutrient.Cals_per100grams?.Replace(" cal", "") ?? "0";
             if (!int.TryParse(calsPer100Grams, out int calsPer100GramsValue))
             {
-                return BadRequest("Invalid calorie value.");
+                TempData["ErrorMessage"] = "Invalid calorie value.";
+                return RedirectToAction("NutrientSelect");
             }
 
             int totalCalories = (int)(calsPer100GramsValue * (totalQuantity / 100));
-
             var today = DateTime.Today;
 
             var existingCalory = _context.TotalCalories
@@ -81,7 +84,7 @@ namespace KaloriWebApplication.Controllers
             {
                 var newCalory = new TotalCalory
                 {
-                    UserID = userId,
+                    UserID = userId.Value,
                     TotalCal = totalCalories,
                     CaloryDate = today
                 };
@@ -98,43 +101,42 @@ namespace KaloriWebApplication.Controllers
 
             _context.UserNutrients.Add(userNutrient);
 
-            // Kullanıcının günlük kalori limitini kontrol et ve gerekirse bildirim ekle
             var user = _context.Users.Find(userId);
             if (user != null && existingCalory != null)
             {
                 int dailyCalorieLimit = user.DailyCalories ?? 0;
-                
 
                 if (existingCalory.TotalCal > dailyCalorieLimit)
                 {
                     var notification = new notification
                     {
                         UserID = userId.Value,
-                        notificationText = "Aştınız",
+                        notificationText = "You've exceeded your daily calorie limit.",
                         notificationDate = DateTime.Now,
-                        isRead = "no"
+                        isRead = 0
                     };
-
                     _context.notifications.Add(notification);
+                    TempData["SuccessMessage"] = "Nutrient added successfully, but you've exceeded your daily calorie limit.";
                 }
-                else if (existingCalory.TotalCal>dailyCalorieLimit-500)
+                else if (existingCalory.TotalCal > dailyCalorieLimit - 500)
                 {
                     var notification = new notification
                     {
                         UserID = userId.Value,
-                        notificationText = "aşmaya yaklaştınız",
+                        notificationText = "You're close to exceeding your daily calorie limit.",
                         notificationDate = DateTime.Now,
-                        isRead = "no"
+                        isRead =0 
                     };
-
-                    _context.notifications.Add(notification);   
+                    _context.notifications.Add(notification);
+                    TempData["SuccessMessage"] = "Nutrient added successfully, but you're close to exceeding your daily calorie limit.";
                 }
-
-                
+                else
+                {
+                    TempData["SuccessMessage"] = "Nutrient added successfully!";
+                }
             }
-            _context.SaveChanges();
-            
 
+            _context.SaveChanges();
             return RedirectToAction("NutrientSelect");
         }
 
@@ -246,7 +248,29 @@ namespace KaloriWebApplication.Controllers
             return Json(new { success = true, dailyCalories });
         }
 
-        
+        [HttpPost]
+        public IActionResult NotificationSave()
+        {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+                var not = new notification
+                {
+                    UserID = userId.Value, 
+                    notificationText = "Aştınız",
+                    notificationDate = DateTime.Now
+                };
+
+               
+                 _context.notifications.Add(not);
+                 _context.SaveChanges();
+            
+
+            return View();
+        }
 
 
         [HttpPost]

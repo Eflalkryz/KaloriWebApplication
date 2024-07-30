@@ -18,15 +18,9 @@
     </div>
 
     <div class="form-group">
-        <label for="foodItemSearch">Search Food Item:</label>
-        <input type="text" id="foodItemSearch" class="form-control" placeholder="Type to search...">
-    </div>
-
-    <div class="form-group">
-        <label for="foodItemDropdown">Select Food Item:</label>
-        <select id="foodItemDropdown" class="form-control" name="nutrientId">
-            <option value="">-- Select Food Item --</option>
-        </select>
+        <label for="foodItemAutocomplete">Search and Select Food Item:</label>
+        <input type="text" id="foodItemAutocomplete" class="form-control" placeholder="Type to search...">
+        <input type="hidden" id="foodItemId" name="nutrientId">
     </div>
 
     <div class="form-group">
@@ -60,40 +54,44 @@
 </form>
 
 @section Scripts {
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
         $(function () {
             $('#categoryDropdown').change(function () {
                 updateFoodItems();
             });
 
-            $('#foodItemSearch').on('input', function () {
-                updateFoodItems();
-            });
-
-            function updateFoodItems() {
-                var category = $('#categoryDropdown').val();
-                var searchQuery = $('#foodItemSearch').val();
-                $.ajax({
-                    url: '@Url.Action("GetFoodItems", "Nutrient")',
-                    type: 'GET',
-                    data: { category: category, searchQuery: searchQuery },
-                    success: function (response) {
-                        var foodItemDropdown = $('#foodItemDropdown');
-                        foodItemDropdown.empty(); // Clear existing options
-                        if (response.length > 0) {
-                            $.each(response, function (index, item) {
-                                foodItemDropdown.append($('<option>').text(item.name).attr('value', item.id));
-                            });
-                        } else {
-                            foodItemDropdown.append($('<option>').text('-- No Food Items --'));
+            $('#foodItemAutocomplete').autocomplete({
+                source: function (request, response) {
+                    var category = $('#categoryDropdown').val();
+                    $.ajax({
+                        url: '@Url.Action("GetFoodItems", "Nutrient")',
+                        type: 'GET',
+                        data: {
+                            category: category,
+                            searchQuery: request.term
+                        },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return {
+                                    label: item.name,
+                                    value: item.id
+                                };
+                            }));
+                        },
+                        error: function () {
+                            alert('Error fetching food items.');
                         }
-                    },
-                    error: function () {
-                        alert('Error fetching food items.');
-                    }
-                });
-            }
+                    });
+                },
+                select: function (event, ui) {
+                    $('#foodItemAutocomplete').val(ui.item.label); // Display the name of the item
+                    $('#foodItemId').val(ui.item.value); // Store the id in the hidden field
+                    return false; // Prevent the default behavior
+                }
+            });
 
             function updateTotalQuantity() {
                 var portions = parseFloat($('#portionDropdown').val()) || 0;

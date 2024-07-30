@@ -97,16 +97,15 @@ namespace KaloriWebApplication.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-               List<notification> bildirim = _context.notifications
-                .Where(un => un.UserID == userId.Value )
-                .OrderByDescending(un => un.notificationDate)
-                .ToList();
+            List<notification> bildirim = _context.notifications
+             .Where(un => un.UserID == userId.Value)
+             .OrderByDescending(un => un.notificationDate)
+             .ToList();
 
 
             return View(bildirim);
         }
 
-        
 
     }
 }
