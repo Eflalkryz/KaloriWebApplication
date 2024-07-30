@@ -246,29 +246,7 @@ namespace KaloriWebApplication.Controllers
             return Json(new { success = true, dailyCalories });
         }
 
-        [HttpPost]
-        public IActionResult NotificationSave()
-        {
-            var userId = HttpContext.Session.GetInt32("UserID");
-            if (userId == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-                var not = new notification
-                {
-                    UserID = userId.Value, 
-                    notificationText = "Aştınız",
-                    notificationDate = DateTime.Now
-                };
-
-               
-                 _context.notifications.Add(not);
-                 _context.SaveChanges();
-            
-
-            return View();
-        }
+        
 
 
         [HttpPost]
