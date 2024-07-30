@@ -1,0 +1,174 @@
+﻿@model List<KaloriWebApplication.Models.Concrete.notification>
+
+@{
+    Layout = "_dashlayout";
+}
+
+<style>
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: sans-serif;
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        height: 100vh;
+        background-color: darkgrey;
+    }
+
+    .notinficationcontainer {
+        background-color: white;
+        border-radius: 1.5rem;
+        width: 700px;
+        padding: 1 rem 1 rem;
+        margin: 1.5 rem;
+    }
+
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2 rem;
+    }
+
+    .headertext {
+        display: flex;
+        align-items: center;
+        margin-left: 10px;
+        margin-top: 10px;
+    }
+
+    #num_of_noty {
+        background-color: cornflowerblue;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        width: 30px;
+        height: 30px;
+        border-radius: 2rem;
+        margin-left: 5px;
+    }
+
+    #mark_read {
+        color: gray;
+        cursor: pointer;
+        transition: 06s ease;
+    }
+
+        #mark_read:hover {
+            color: black;
+        }
+
+    main {
+        display: flex;
+        flex-direction: column;
+        gap: 1 rem;
+        padding: 10px;
+    }
+
+    .card {
+        display: flex;
+        align-items: center;
+        padding: 1 rem;
+        border-radius: 1rem;
+    }
+
+        .card .text {
+            margin-left: 10px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            padding: 5px;
+        }
+
+    .unread {
+        background-color: pink;
+    }
+</style>
+
+
+<div class="container">
+
+    <div class="notinficationcontainer">
+
+        <header>
+            <div class="headertext">
+                <h1>Notifications</h1>
+                <span id="num_of_noty"></span>
+            </div>
+            <p id="mark_read">Mark all as read.</p>
+
+        </header>
+        <main class="main">
+
+                @foreach (var item in Model)
+                {
+        
+                    <div class="card unread">
+                        <div class="text">
+                        <tr>
+                            <td>@item.notificationText</td>
+
+                            <td>@item.notificationDate</td>
+
+                            @{
+                                var kimlik = item.notificationID;
+                            }
+                                 
+                        </tr>
+
+                        </div>
+                    </div>
+           
+                <br />
+                }
+
+        </main>
+
+
+
+
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        
+        var unreadmessages = document.querySelectorAll('.unread');
+        var unreadmessagecount = document.getElementById('num_of_noty');
+        var markall = document.getElementById('mark_read');
+
+        unreadmessagecount.innerText = unreadmessages.length;
+
+            unreadmessages.forEach((message) => {
+                message.addEventListener('click', () => {
+                    
+                        message.classList.remove('unread');
+                        var newunread = document.querySelectorAll('.unread');
+                        unreadmessagecount.innerText = newunread.length;
+                    
+                        
+                });
+            });
+        
+            
+
+    
+        markall.addEventListener('click', () => {
+            unreadmessages.forEach((message) => {
+                message.classList.remove('unread');
+            });
+            var newunread = document.querySelectorAll('.unread');
+            unreadmessagecount.innerText = newunread.length;
+        });
+
+
+    </script>
+}

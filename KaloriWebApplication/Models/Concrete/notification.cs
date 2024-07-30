@@ -12,7 +12,8 @@ namespace KaloriWebApplication.Models.Concrete
         public DateTime notificationDate { get; set; }
         
         public int UserID { get; set; }
-        
+
+        public string? isRead {  get; set; }        
         
     }
 }

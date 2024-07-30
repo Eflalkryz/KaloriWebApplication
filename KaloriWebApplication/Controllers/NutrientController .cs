@@ -111,7 +111,8 @@ namespace KaloriWebApplication.Controllers
                     {
                         UserID = userId.Value,
                         notificationText = "Aştınız",
-                        notificationDate = DateTime.Now
+                        notificationDate = DateTime.Now,
+                        isRead = "no"
                     };
 
                     _context.notifications.Add(notification);
@@ -122,7 +123,8 @@ namespace KaloriWebApplication.Controllers
                     {
                         UserID = userId.Value,
                         notificationText = "aşmaya yaklaştınız",
-                        notificationDate = DateTime.Now
+                        notificationDate = DateTime.Now,
+                        isRead = "no"
                     };
 
                     _context.notifications.Add(notification);   

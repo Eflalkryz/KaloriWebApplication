@@ -91,10 +91,22 @@ namespace KaloriWebApplication.Controllers
         [HttpGet]
         public IActionResult notification()
         {
-           
-            return View("~/Views/Account/notification.cshtml");
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+               List<notification> bildirim = _context.notifications
+                .Where(un => un.UserID == userId.Value )
+                .OrderByDescending(un => un.notificationDate)
+                .ToList();
+
+
+            return View(bildirim);
         }
 
-       
+        
+
     }
 }
