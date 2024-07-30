@@ -47,6 +47,22 @@ namespace KaloriWebApplication.Controllers
         [HttpGet]
         public IActionResult Dashboard()
         {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var user = _context.Users.Find(userId);
+            if (user != null)
+            {
+                ViewBag.UserName = user.Name;
+            }
+            else
+            {
+                ViewBag.UserName = "Guest";
+            }
+
             ViewData["Title"] = "Account Dashboard";
             return View();
         }
@@ -222,7 +238,9 @@ namespace KaloriWebApplication.Controllers
         {
             return View();
         }
-
-
+        
     }
+
+
 }
+
