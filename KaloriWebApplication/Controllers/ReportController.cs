@@ -106,6 +106,51 @@ namespace KaloriWebApplication.Controllers
             return View(bildirim);
         }
 
+        [HttpPost]
+        public IActionResult notificatio(int a)
+        {
+           
 
+            var existingUser = _context.notifications.FirstOrDefault(u => u.notificationID == a);
+            if (existingUser == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                existingUser.isRead = 1;
+                _context.SaveChanges();
+            }
+
+
+
+
+            return RedirectToAction("notification");
+        }
+
+        [HttpPost]
+        public IActionResult notificati(int a)
+        {
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            
+                var notifications = _context.notifications.Where(n => n.UserID == userId).ToList();
+
+                foreach (var notification in notifications)
+                {
+                    notification.isRead = a;
+                }
+
+                _context.SaveChanges();
+            
+
+
+
+            return RedirectToAction("notification");
+        }
     }
 }

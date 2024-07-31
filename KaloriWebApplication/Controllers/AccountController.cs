@@ -37,7 +37,7 @@ namespace KaloriWebApplication.Controllers
                     var notification = new notification
                     {
                         UserID = user.UserID,
-                        notificationText = "Başarıyla giriş yaptınız",
+                        notificationText = "Login Successful",
                         notificationDate = DateTime.Now,
                         isRead = 0
                     };

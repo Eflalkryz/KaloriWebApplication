@@ -27,6 +27,7 @@
         width: 700px;
         padding: 1 rem 1 rem;
         margin: 1.5 rem;
+        overflow: auto;
     }
 
     header {
@@ -70,6 +71,7 @@
         flex-direction: column;
         gap: 1 rem;
         padding: 10px;
+       
     }
 
     .card {
@@ -110,16 +112,11 @@
                 @foreach (var item in Model)
                 {
 
-                    <div class="@(item.isRead == 0 ? "card unread" : "card")">
+                    <div class="@(item.isRead == 0 ? "card unread" : "card" )" data-id="@item.notificationID">
                         <div class="text">
                         <tr>
                             <td>@item.notificationText</td>
-
                             <td>@item.notificationDate</td>
-
-                            @{
-                                var kimlik = item.notificationID;
-                            }
                                  
                         </tr>
 
@@ -149,21 +146,46 @@
 
             unreadmessages.forEach((message) => {
                 message.addEventListener('click', () => {
-                    
-                        message.classList.remove('unread');
-                        var newunread = document.querySelectorAll('.unread');
-                        unreadmessagecount.innerText = newunread.length;
-                    
-                        
+                    var notificationId = message.getAttribute('data-id');
+
+                    $.ajax({
+                        type: "post",
+                        url: "/Report/notificatio",
+                        data: { a: notificationId },
+                        success: function (func) {
+                            let result = jQuery.parseJSON(func);
+                            alert("başarılı");
+                        }
+                    });
+
+
+                    message.classList.remove('unread');
+                    var newunread = document.querySelectorAll('.unread');
+                    unreadmessagecount.innerText = newunread.length;
+                    console.log(notificationId);
                 });
             });
         
-            
+           
+                
 
     
         markall.addEventListener('click', () => {
+
+
+                $.ajax({
+                    type: "post",
+                    url: "/Report/notificati",
+                    data: { a: 1},
+                    success: function (func) {
+                        let result = jQuery.parseJSON(func);
+                        alert("başarılı");
+                    }
+                });
+
             unreadmessages.forEach((message) => {
                 message.classList.remove('unread');
+
             });
             var newunread = document.querySelectorAll('.unread');
             unreadmessagecount.innerText = newunread.length;
