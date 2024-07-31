@@ -100,6 +100,7 @@ namespace KaloriWebApplication.Controllers
             List<notification> bildirim = _context.notifications
              .Where(un => un.UserID == userId.Value)
              .OrderByDescending(un => un.notificationDate)
+              .Take(10)
              .ToList();
 
 
