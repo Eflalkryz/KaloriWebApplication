@@ -85,14 +85,13 @@ namespace KaloriWebApplication.Controllers
         {
             return View();
         }
-       
+
 
         [HttpPost]
         public IActionResult Register(User model)
         {
             if (ModelState.IsValid)
             {
-                // Check if the email is already registered
                 var existingUserByEmail = _context.Users.FirstOrDefault(u => u.Eposta == model.Eposta);
                 if (existingUserByEmail != null)
                 {
@@ -100,7 +99,6 @@ namespace KaloriWebApplication.Controllers
                     return View(model);
                 }
 
-                // Check if the username is already taken
                 var existingUserByUsername = _context.Users.FirstOrDefault(u => u.Username == model.Username);
                 if (existingUserByUsername != null)
                 {
@@ -108,14 +106,12 @@ namespace KaloriWebApplication.Controllers
                     return View(model);
                 }
 
-                // Save the new user
                 model.RegisterDate = DateTime.UtcNow;
                 model.AdminRole = false;
 
                 _context.Users.Add(model);
                 _context.SaveChanges();
 
-                // Redirect to CompleteProfile
                 return RedirectToAction("CompleteProfile", new { userId = model.UserID });
             }
             return View(model);

@@ -29,7 +29,7 @@
         background-color: lightgrey;
         border-radius: 15px;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        border: 2px solid #ccc; /* Border eklemek için */
+        border: 2px solid #ccc;
         margin-top: 20px;
         margin-bottom: 20px;
         margin-left: 20px;
@@ -40,25 +40,28 @@
         max-width: 50%;
         margin-left: 20px;
     }
+
+    .short-date-picker {
+        width: 150px;
+    }
 </style>
 
 <div class="content">
     <div class="date-range-warning">Lütfen görmek istediğiniz tarih aralığını seçiniz:</div>
-<input type="date" id="startDatePicker" class="form-control">
-<input type="date" id="endDatePicker" class="form-control">
-<button id="showWeeklyCaloriesButton" class="btn btn-primary">Haftalık Kalorileri Göster</button>
-<div class="chart-container" id="weekly-chart">
-    <div class="container-title">7 Günlük Besin Girişi</div>
-    <div class="weekly-chart-wrapper">
-        <canvas id="weeklyCaloriesChart"></canvas>
+    <input type="date" id="startDatePicker" class="form-control short-date-picker">
+    <input type="date" id="endDatePicker" class="form-control short-date-picker">
+    <button id="showWeeklyCaloriesButton" class="btn btn-primary">Haftalık Kalorileri Göster</button>
+    <div class="chart-container" id="weekly-chart">
+        <div class="container-title">7 Günlük Besin Girişi</div>
+        <div class="weekly-chart-wrapper">
+            <canvas id="weeklyCaloriesChart"></canvas>
+        </div>
     </div>
 </div>
-</div>
-
 
 <div class="content">
     <label for="datePicker">Tarih Seç:</label>
-    <input type="date" id="datePicker" class="form-control">
+    <input type="date" id="datePicker" class="form-control short-date-picker">
     <button id="showNutrientsButton" class="btn btn-primary">Eklenilen Besinleri Göster</button>
 
     <div id="nutrientsTable" style="display:none; margin-top: 20px;">
@@ -300,7 +303,7 @@
                 });
             }
 
-  
+
             var today = new Date().toISOString().split('T')[0];
             var past7Days = new Date();
             past7Days.setDate(past7Days.getDate() - 6);
