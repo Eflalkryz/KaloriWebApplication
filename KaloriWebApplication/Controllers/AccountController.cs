@@ -30,10 +30,10 @@ namespace KaloriWebApplication.Controllers
 
                 if (user != null)
                 {
-                    // Kullanıcı ID'sini oturumda saklama
+                    // Storing user ID in session
                     HttpContext.Session.SetInt32("UserID", user.UserID);
 
-                    // Bildirimi oluştur ve veritabanına ekle
+                    // Create and add notification to database
                     var notification = new notification
                     {
                         UserID = user.UserID,

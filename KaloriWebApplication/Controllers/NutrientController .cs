@@ -338,7 +338,7 @@ namespace KaloriWebApplication.Controllers
 
                 weeklyCalories.Add(new
                 {
-                    Date = date.ToString("yyyy-MM-dd"), // Tarihi string olarak döndürüyoruz.
+                    Date = date.ToString("yyyy-MM-dd"), // We're returning the date as a string.
                     TotalCalories = caloriesForDate != 0 ? caloriesForDate : 0
                 });
             }
