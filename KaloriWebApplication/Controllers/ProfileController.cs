@@ -51,7 +51,7 @@ namespace KaloriWebApplication.Controllers
                     return NotFound();
                 }
 
-                // Boş olmayan alanları güncelle
+                // Update the non-empty fields
                 existingUser.Username = !string.IsNullOrWhiteSpace(model.Username) ? model.Username : existingUser.Username;
                 existingUser.Password = !string.IsNullOrWhiteSpace(model.Password) ? model.Password : existingUser.Password;
                 existingUser.Eposta = !string.IsNullOrWhiteSpace(model.Eposta) ? model.Eposta : existingUser.Eposta;

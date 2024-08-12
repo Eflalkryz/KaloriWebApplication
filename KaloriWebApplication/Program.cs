@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-// Oturum yönetimini ekleyin
+// Add session management
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -17,7 +17,7 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddHttpContextAccessor();
 
-// Veritabaný baðlamýný ekleyin
+// Add database context
 builder.Services.AddDbContext<Context>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TutorialDbConnection")));
 
@@ -36,7 +36,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Oturum yönetimini kullanýn
+// Use session management
 app.UseSession();
 
 
