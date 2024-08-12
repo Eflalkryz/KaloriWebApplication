@@ -1,0 +1,25 @@
+﻿@model KaloriWebApplication.Models.Concrete.fotoUpload
+
+@{
+    ViewData["Title"] = "photoUpload";
+    Layout = "~/Views/Shared/_dashlayout.cshtml";
+}
+
+<h2>Fotoğraf Yükle</h2>
+
+<form asp-action="photoUpload" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label for="formFile" class="form-label">Fotoğraf Seç</label>
+        <input class="form-control" type="file" id="formFile" name="image" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Yükle</button>
+</form>
+
+
+@if (ViewBag.ImagePath != null)
+{
+    <div>
+        <h3>Yüklenen Fotoğraf:</h3>
+        <img src="@ViewBag.ImagePath" alt="Yüklenen Fotoğraf" style="max-width: 100%; height: auto;" />
+    </div>
+}

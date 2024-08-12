@@ -1,0 +1,7 @@
+﻿namespace KaloriWebApplication.Models.Concrete
+{
+    public class fotoUpload
+    {
+        public IFormFile image { get; set; }
+    }
+}
