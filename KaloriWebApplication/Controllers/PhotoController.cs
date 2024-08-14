@@ -10,9 +10,20 @@ namespace KaloriWebApplication.Controllers
     {
         private readonly Context _context;
 
+
         public PhotoController(Context context)
         {
             _context = context;
+        }
+        private void ImageRecognition()
+        {
+            //Image recognition stuff goes here
+            Console.WriteLine("Image recognition is done");
+        }
+
+        private void ImageOCR()
+        {
+            Console.WriteLine("Image OCR is done");
         }
 
 
@@ -38,10 +49,28 @@ namespace KaloriWebApplication.Controllers
                 p.image.CopyTo(stream);
                 ViewBag.ImagePath = "/NewFolder/" + newimagename;
             }
-            
+
+            switch (p.SelectedRadio)
+            {
+                case "ImageRecognition":
+                    ImageRecognition();
+                    break;
+
+                case "OCR":
+                    ImageOCR();
+                    break;
+
+                default:
+                    //Likely an error, but the form does require a radio button to be selected
+                    break;
+
+            }
+
+            ViewBag.SelectedRadio = p.SelectedRadio;
             return View(p);
         }
 
+        
 
     }
 }

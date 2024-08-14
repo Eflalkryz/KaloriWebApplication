@@ -12,6 +12,17 @@
         <label for="formFile" class="form-label">Fotoğraf Seç</label>
         <input class="form-control" type="file" id="formFile" name="image" required>
     </div>
+    <div class="mb-3">
+        <label class="form-label">Seçenekler</label>
+        <div>
+            <input type="radio" id=" ="option1" name="SelectedRadio" value="ImageRecognition" required>
+            <label for="option1">Yemek Tanımlama</label>
+        </div>
+        <div>
+            <input type="radio" id="option2" name="SelectedRadio" value="OCR" required>
+			<label for="option2">Besin Değerleri Tanımlama</label
+        </div>
+    </div>
     <button type="submit" class="btn btn-primary">Yükle</button>
 </form>
 
@@ -21,5 +32,6 @@
     <div>
         <h3>Yüklenen Fotoğraf:</h3>
         <img src="@ViewBag.ImagePath" alt="Yüklenen Fotoğraf" style="max-width: 100%; height: auto;" />
+        <h3>Seçilen operasyon: @ViewBag.SelectedRadio</h3>
     </div>
 }

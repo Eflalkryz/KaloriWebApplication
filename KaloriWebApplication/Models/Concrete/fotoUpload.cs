@@ -3,5 +3,6 @@
     public class fotoUpload
     {
         public IFormFile image { get; set; }
+        public string SelectedRadio { get; set; }
     }
 }
