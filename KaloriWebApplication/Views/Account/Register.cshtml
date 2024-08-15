@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Register";
-    
 }
 
 <style>
@@ -10,31 +9,26 @@
         background-color: cadetblue !important;
         border-top-left-radius: 20px;
         border-top-right-radius: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-        border-top-left-radius: 20px;
-        border-top-right-radius: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    
-
     .text-success {
-        color: cadetblue !important; 
+        color: cadetblue !important;
     }
 
     .btn-success {
-        background-color: cadetblue; 
-        border-color: cadetblue; 
+        background-color: cadetblue;
+        border-color: cadetblue;
     }
 
     .text-success a {
-        color: cadetblue !important; 
+        color: cadetblue !important;
     }
 
     .card-footer {
         border-bottom-left-radius: 20px;
         border-bottom-right-radius: 20px;
     }
-    
 </style>
 
 <div class="container mt-5">
@@ -58,7 +52,7 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="Eposta" class="text-success">Email</label>
-                            <input asp-for="Eposta" class="form-control" />
+                            <input asp-for="Eposta" class="form-control" type="email" />
                             <span asp-validation-for="Eposta" class="text-danger"></span>
                         </div>
                         <button type="submit" class="btn btn-success btn-block">Register</button>

@@ -58,6 +58,10 @@
                             <div class="sb-nav-link-icon"><i class="fas fa-bell"></i></div>
                             Bildirimler
                         </a>
+                        <a class="nav-link" asp-controller="Photo" asp-action="photoUpload">
+                            <div class="sb-nav-link-icon"><i class="fas fa-camera"></i></div>
+                            Fotoğraflı İşlemler
+                        </a>
                     </div>
                 </div>
                 <div class="sb-sidenav-footer">
@@ -70,7 +74,9 @@
             <main class="container">
                 <div class="container-fluid px-4">
                     <div class="row">
+
                         @RenderBody()
+
                     </div>
                 </div>
             </main>
