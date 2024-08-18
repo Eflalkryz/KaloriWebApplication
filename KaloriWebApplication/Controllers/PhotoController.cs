@@ -3,12 +3,22 @@ using KaloriWebApplication.Models.Concrete;
 using System.Linq;
 using KaloriWebApplication.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.ML.OnnxRuntime;
+using Microsoft.ML.OnnxRuntime.Tensors;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+
 
 namespace KaloriWebApplication.Controllers
 {
     public class PhotoController : Controller
     {
         private readonly Context _context;
+
+        private readonly string _modelPath = Path.Combine("wwwroot", "model.onnx");
 
 
         public PhotoController(Context context)
