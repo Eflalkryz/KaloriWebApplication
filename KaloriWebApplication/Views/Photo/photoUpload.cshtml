@@ -19,8 +19,12 @@
             <label for="option1">Yemek Tanımlama</label>
         </div>
         <div>
-            <input type="radio" id="option2" name="SelectedRadio" value="OCR" required>
-			<label for="option2">Besin Değerleri Tanımlama</label
+            <input type="radio" id="option2" name="SelectedRadio" value="AzureOCR" required>
+			<label for="option2">Besin Değerleri Tanımlama (Azure Computer Vision)</label
+        </div>
+        <div>
+            <input type="radio" id="option3" name="SelectedRadio" value="TesseractOCR" required>
+			<label for="option3">Besin Değerleri Tanımlama (Tesseract)</label
         </div>
     </div>
     <button type="submit" class="btn btn-primary">Yükle</button>
@@ -33,5 +37,6 @@
         <h3>Yüklenen Fotoğraf:</h3>
         <img src="@ViewBag.ImagePath" alt="Yüklenen Fotoğraf" style="max-width: 100%; height: auto;" />
         <h3>Seçilen operasyon: @ViewBag.SelectedRadio</h3>
+        <p>@ViewBag.OCRText</p>
     </div>
 }
