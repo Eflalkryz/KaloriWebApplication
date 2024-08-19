@@ -6,6 +6,12 @@ using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
+if(builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddUserSecrets<Program>();
+}
+
+
 builder.Services.AddControllersWithViews();
 
 // Add session management
@@ -17,11 +23,13 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+
+
 builder.Services.AddHttpContextAccessor();
 
 // Add database context
 builder.Services.AddDbContext<Context>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("TutorialDbConnection"), sqlServerOptionsAction: sqlOptions =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlServerOptionsAction: sqlOptions =>
     {
         sqlOptions.EnableRetryOnFailure(
             maxRetryCount: 5,
