@@ -40,7 +40,7 @@ namespace KaloriWebApplication.Controllers
             return client;
         }
 
-        public static async Task<string> ReadFileUrl(ComputerVisionClient client, string filePath)
+        public static async Task<List<string>> ReadFileUrl(ComputerVisionClient client, string filePath)
         {
             Console.WriteLine("----------------------------------------------------------");
             Console.WriteLine("READ FILE FROM DISK");
@@ -73,15 +73,15 @@ namespace KaloriWebApplication.Controllers
                 // Display the found text.
                 Console.WriteLine();
                 var textUrlFileResults = results.AnalyzeResult.ReadResults;
-                StringBuilder sb = new StringBuilder();
+                List<string> lines = new List<string>();
                 foreach (ReadResult page in textUrlFileResults)
                 {
                     foreach (Line line in page.Lines)
                     {
-                        sb.AppendLine(line.Text);
+                        lines.Add(line.Text);
                     }
                 }
-                return string.Join(Environment.NewLine, sb.ToString());
+                return lines;
             }
         }
 
@@ -138,6 +138,7 @@ namespace KaloriWebApplication.Controllers
                         Console.WriteLine("Image OCR via Azure Computer Vision...");
                         ComputerVisionClient client = Authenticate(_azureComputerVisionEndpoint, _azureComputerVisionKey);
                         p.OCRText = ReadFileUrl(client, location).Result;
+                        Console.WriteLine(p.OCRText);
                         break;
 
                     case "TesseractOCR":
@@ -150,8 +151,6 @@ namespace KaloriWebApplication.Controllers
 
                 }
             }
-
-            
 
             ViewBag.SelectedRadio = p.SelectedRadio;
             ViewBag.OCRText = p.OCRText;

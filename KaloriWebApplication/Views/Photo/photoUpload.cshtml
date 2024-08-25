@@ -37,6 +37,18 @@
         <h3>Yüklenen Fotoğraf:</h3>
         <img src="@ViewBag.ImagePath" alt="Yüklenen Fotoğraf" style="max-width: 100%; height: auto;" />
         <h3>Seçilen operasyon: @ViewBag.SelectedRadio</h3>
-        <p>@ViewBag.OCRText</p>
+        @if (Model.OCRText != null && Model.OCRText.Any())
+		{
+            <h3>OCR Çıktısı:</h3>
+            @foreach(var item in Model.OCRText){
+			{
+				<p>@item</p>
+			}
+            }
+        }
+        else
+        {
+        <p>OCR Çıktısı Bulunamadı.</p>
+        }
     </div>
 }
