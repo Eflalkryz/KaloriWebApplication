@@ -22,6 +22,9 @@ namespace KaloriWebApplication.Models
 
         public DbSet<notification> notifications { get; set; }
 
+        public DbSet<WaterIntake> WaterIntakes { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
