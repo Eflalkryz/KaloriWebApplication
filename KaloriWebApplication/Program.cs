@@ -1,12 +1,20 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using KaloriWebApplication.Models;
+using Polly;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
+if(builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddUserSecrets<Program>();
+}
+
+
 builder.Services.AddControllersWithViews();
 
-// Oturum yönetimini ekleyin
+// Add session management
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -15,11 +23,19 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+
+
 builder.Services.AddHttpContextAccessor();
 
-// Veritabaný baðlamýný ekleyin
+// Add database context
 builder.Services.AddDbContext<Context>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("TutorialDbConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlServerOptionsAction: sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(60),
+            errorNumbersToAdd: null);
+    }));
 
 var app = builder.Build();
 
@@ -36,7 +52,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Oturum yönetimini kullanýn
+// Use session management
 app.UseSession();
 
 

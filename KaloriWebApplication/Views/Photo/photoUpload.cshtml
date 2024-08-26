@@ -1,0 +1,54 @@
+﻿@model KaloriWebApplication.Models.Concrete.fotoUpload
+
+@{
+    ViewData["Title"] = "photoUpload";
+    Layout = "~/Views/Shared/_dashlayout.cshtml";
+}
+
+<h2>Fotoğraf Yükle</h2>
+
+<form asp-action="photoUpload" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label for="formFile" class="form-label">Fotoğraf Seç</label>
+        <input class="form-control" type="file" id="formFile" name="image" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Seçenekler</label>
+        <div>
+            <input type="radio" id=" ="option1" name="SelectedRadio" value="ImageRecognition" required>
+            <label for="option1">Yemek Tanımlama</label>
+        </div>
+        <div>
+            <input type="radio" id="option2" name="SelectedRadio" value="AzureOCR" required>
+			<label for="option2">Besin Değerleri Tanımlama (Azure Computer Vision)</label
+        </div>
+        <div>
+            <input type="radio" id="option3" name="SelectedRadio" value="TesseractOCR" required>
+			<label for="option3">Besin Değerleri Tanımlama (Tesseract)</label
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Yükle</button>
+</form>
+
+
+@if (ViewBag.ImagePath != null)
+{
+    <div>
+        <h3>Yüklenen Fotoğraf:</h3>
+        <img src="@ViewBag.ImagePath" alt="Yüklenen Fotoğraf" style="max-width: 100%; height: auto;" />
+        <h3>Seçilen operasyon: @ViewBag.SelectedRadio</h3>
+        @if (Model.OCRText != null && Model.OCRText.Any())
+		{
+            <h3>OCR Çıktısı:</h3>
+            @foreach(var item in Model.OCRText){
+			{
+				<p>@item</p>
+			}
+            }
+        }
+        else
+        {
+        <p>OCR Çıktısı Bulunamadı.</p>
+        }
+    </div>
+}

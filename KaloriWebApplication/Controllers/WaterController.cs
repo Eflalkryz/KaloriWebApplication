@@ -1,13 +1,25 @@
+<<<<<<< HEAD
 using Microsoft.AspNetCore.Mvc;
+=======
+﻿using Microsoft.AspNetCore.Mvc;
+>>>>>>> 114c51e0875d52fbf00be69c73589095784b050c
 using KaloriWebApplication.Models;
 using KaloriWebApplication.Models.Concrete;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System;
+<<<<<<< HEAD
 
 namespace KaloriWebApplication.Controllers
 {
     public class WaterController : Controller
+=======
+using System.Security.Claims;
+
+namespace KaloriWebApplication.Controllers
+{
+    public class WaterController: Controller
+>>>>>>> 114c51e0875d52fbf00be69c73589095784b050c
     {
         private readonly Context _context;
 
@@ -16,6 +28,7 @@ namespace KaloriWebApplication.Controllers
             _context = context;
         }
 
+<<<<<<< HEAD
         [HttpGet]
         public IActionResult WaterIntake()
         {
@@ -109,3 +122,12 @@ namespace KaloriWebApplication.Controllers
         }
     }
 }
+=======
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+    }
+}
+>>>>>>> 114c51e0875d52fbf00be69c73589095784b050c

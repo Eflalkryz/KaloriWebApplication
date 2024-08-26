@@ -31,7 +31,7 @@ namespace KaloriWebApplication.Models.Concrete
         public String? ActivityLevel { get; set; }
 
         [StringLength(50)]
-        public String? Goal { get; set; } //Kilo Alma mı ? Verme mi ?
+        public String? Goal { get; set; } //  Gain weight ? Lose weight ?
         public int? DailyCalories { get; set; }
 
         public ICollection<TotalCalory>? TotalCalories { get; set; }
