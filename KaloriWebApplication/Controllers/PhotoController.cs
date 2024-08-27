@@ -5,20 +5,12 @@ using KaloriWebApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Threading;
-using System.ComponentModel;
-using System.Text;
+
+
 
 namespace KaloriWebApplication.Controllers
 {
