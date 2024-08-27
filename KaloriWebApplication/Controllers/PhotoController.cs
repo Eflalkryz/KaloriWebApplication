@@ -9,6 +9,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
+using Microsoft.AspNetCore.Hosting;
 
 
 
@@ -19,10 +20,11 @@ namespace KaloriWebApplication.Controllers
     {
         private readonly Context _context;
 
-        private readonly string _modelPath = Path.Combine("wwwroot", "model.onnx");
+        private readonly string _modelPath;
 
         private readonly string _azureComputerVisionKey;
         private readonly string _azureComputerVisionEndpoint;
+        private readonly IWebHostEnvironment _env;
 
         public static ComputerVisionClient Authenticate(string endpoint, string key)
         {
@@ -77,11 +79,13 @@ namespace KaloriWebApplication.Controllers
             }
         }
 
-        public PhotoController(Context context, IConfiguration configuration)
+        public PhotoController(Context context, IConfiguration configuration, IWebHostEnvironment env)
         {
             _context = context;
             _azureComputerVisionKey = configuration["AzureComputerVision:SubscriptionKey"];
             _azureComputerVisionEndpoint = configuration["AzureComputerVision:Endpoint"];
+            _env = env;
+            _modelPath = Path.Combine(_env.WebRootPath, "model.onnx");
         }
 
         private void ImagePreprocess() {
@@ -109,11 +113,11 @@ namespace KaloriWebApplication.Controllers
             {
                 var extension = Path.GetExtension(p.image.FileName);
                 var newimagename = Guid.NewGuid() +extension;
-                var location = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/NewFolder/", newimagename);
+                var location = Path.Combine(_env.WebRootPath, "image_uploads", newimagename);
                 var stream = new FileStream(location, FileMode.Create);
                 p.image.CopyTo(stream);
                 stream.Close();
-                ViewBag.ImagePath = "/NewFolder/" + newimagename;
+                ViewBag.ImagePath = "/image_uploads/" + newimagename;
                 
                 switch (p.SelectedRadio)
                 {
