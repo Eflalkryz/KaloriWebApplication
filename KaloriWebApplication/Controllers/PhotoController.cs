@@ -100,10 +100,6 @@ namespace KaloriWebApplication.Controllers
             //Image recognition stuff goes here
             Console.WriteLine("Image recognition is done");
         }
-        private void TesseractOCR()
-        {
-            Console.WriteLine("Image OCR via Tesseract...");
-        }
 
 
         [HttpGet]
@@ -139,10 +135,6 @@ namespace KaloriWebApplication.Controllers
                         ComputerVisionClient client = Authenticate(_azureComputerVisionEndpoint, _azureComputerVisionKey);
                         p.OCRText = ReadFileUrl(client, location).Result;
                         Console.WriteLine(p.OCRText);
-                        break;
-
-                    case "TesseractOCR":
-                        TesseractOCR();
                         break;
 
                     default:
