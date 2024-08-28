@@ -24,6 +24,8 @@ namespace KaloriWebApplication.Models
 
         public DbSet<WaterIntake> WaterIntakes { get; set; }
 
+        public DbSet<ExerciseType> ExerciseTypes { get; set; }
+        public DbSet<UserCalorie> UserCalories { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
