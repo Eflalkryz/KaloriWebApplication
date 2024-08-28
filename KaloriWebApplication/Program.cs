@@ -1,10 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using KaloriWebApplication.Models;
+using KaloriWebApplication.Services;
 using Polly;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHostedService<CleanupService>();
 
 if(builder.Environment.IsDevelopment())
 {

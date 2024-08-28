@@ -1,15 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using KaloriWebApplication.Models;
 using KaloriWebApplication.Models.Concrete;
-using System.Linq;
-using KaloriWebApplication.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.ML.OnnxRuntime;
-using Microsoft.ML.OnnxRuntime.Tensors;
-using System.IO;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
-using Microsoft.AspNetCore.Hosting;
 
 
 
@@ -24,6 +17,7 @@ namespace KaloriWebApplication.Controllers
 
         private readonly string _azureComputerVisionKey;
         private readonly string _azureComputerVisionEndpoint;
+        // Use _env.WebRootPath to get the path to the wwwroot folder, do not hardcode it
         private readonly IWebHostEnvironment _env;
 
         public static ComputerVisionClient Authenticate(string endpoint, string key)
@@ -64,10 +58,9 @@ namespace KaloriWebApplication.Controllers
                 while ((results.Status == OperationStatusCodes.Running ||
                     results.Status == OperationStatusCodes.NotStarted));
 
-                // Display the found text.
-                Console.WriteLine();
                 var textUrlFileResults = results.AnalyzeResult.ReadResults;
                 List<string> lines = new List<string>();
+                //Return each line as a list of lines
                 foreach (ReadResult page in textUrlFileResults)
                 {
                     foreach (Line line in page.Lines)
@@ -87,10 +80,6 @@ namespace KaloriWebApplication.Controllers
             _env = env;
             _modelPath = Path.Combine(_env.WebRootPath, "model.onnx");
         }
-
-        private void ImagePreprocess() {
-            Console.WriteLine("Preprocessing image...");
-        }
         private void ImageRecognition()
         {
             //Image recognition stuff goes here
@@ -109,16 +98,16 @@ namespace KaloriWebApplication.Controllers
         public IActionResult photoUpload(fotoUpload p)
         {
 
-            if(p.image != null)
+            if (p.image != null)
             {
                 var extension = Path.GetExtension(p.image.FileName);
-                var newimagename = Guid.NewGuid() +extension;
+                var newimagename = Guid.NewGuid() + extension;
                 var location = Path.Combine(_env.WebRootPath, "image_uploads", newimagename);
                 var stream = new FileStream(location, FileMode.Create);
                 p.image.CopyTo(stream);
                 stream.Close();
                 ViewBag.ImagePath = "/image_uploads/" + newimagename;
-                
+
                 switch (p.SelectedRadio)
                 {
                     case "ImageRecognition":
@@ -145,7 +134,7 @@ namespace KaloriWebApplication.Controllers
             return View(p);
         }
 
-        
+
 
     }
 }
