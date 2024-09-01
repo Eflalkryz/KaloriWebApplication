@@ -29,6 +29,23 @@
 
 @if (ViewBag.ImagePath != null)
 {
+    <form id="CaloriesForm" method="post" action=@Url.Action("SaveUserCalories", "Photo")>
+        <div class="form-group">
+            <label for="baseCalories">Calories(kcal per serving):</label>
+            <input type="text" id="baseCalories" class="form-control" name="baseCalories" value="@ViewBag.Calories" min="0" max="9999" oninput="calculateTotalCalories()">
+        </div>
+        <div class="form-group">
+            <label for="totalConsumption">Total consumption(g):</label>
+            <input type="text" id="totalConsumption" class="form-control" name="totalConsumption" value="100" min="0" max="9999" oninput="calculateTotalCalories()">
+        </div>
+        <div class="form-group">
+            <label for="totalCalories">Total calories to add:</label>
+            <input type="text" id="totalCalories" class="form-control" name="totalCalories" readonly>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Calories</button>
+    </form>
+
+
     <div>
         <h3>Yüklenen Fotoğraf:</h3>
         <img src="@ViewBag.ImagePath" alt="Yüklenen Fotoğraf" style="max-width: 100%; height: auto;" />
@@ -48,3 +65,15 @@
         }
     </div>
 }
+
+<script>
+    function calculateTotalCalories() {
+        var baseCalories = parseFloat(document.getElementById('baseCalories').value) || 0;
+        var totalConsumption = parseFloat(document.getElementById('totalConsumption').value) || 0;
+        var totalCalories = baseCalories * totalConsumption;
+        console.log("Base Calories: " + baseCalories);
+        console.log("Total Consumption: " + totalConsumption);
+        console.log("Total Calories: " + totalCalories);
+        document.getElementById('totalCalories').value = totalCalories;
+    }
+</script>

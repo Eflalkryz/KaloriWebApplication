@@ -140,8 +140,6 @@ namespace KaloriWebApplication.Controllers
             return RedirectToAction("NutrientSelect");
         }
 
-
-
         [HttpGet]
         public JsonResult GetUserNutrients()
         {
